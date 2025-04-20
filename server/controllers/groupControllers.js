@@ -1,3 +1,4 @@
+const User = require("../models/userModel");
 const Group = require("./../models/groupModel");
 const isDefaultMongoId = require("./../utils/checkMongoId");
 
@@ -23,6 +24,21 @@ exports.createGroup = async (req, res) => {
       message: "Invalid ID",
     });
   }
+
+  const checkGroup = await Group.find({
+    owner: ownerId,
+    name: name,
+  });
+
+  console.log(checkGroup);
+
+  if (checkGroup.length !== 0) {
+    return res.json({
+      status: "fail",
+      message: "You already own a group with that name",
+    });
+  }
+
   const newGroup = await Group.create({
     name,
     owner: ownerId,
