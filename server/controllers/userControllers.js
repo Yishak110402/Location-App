@@ -1,14 +1,9 @@
 const User = require("./../models/userModel");
 const validate = require("validator");
 const bcrypt = require("bcryptjs");
-const mongoose = require("mongoose");
+const isDefaultMongoId = require("./../utils/checkMongoId")
 
-function isDefaultMongoId(id) {
-  return (
-    mongoose.Types.ObjectId.isValid(id) &&
-    String(new mongoose.Types.ObjectId(id)) === id
-  );
-}
+
 exports.createUser = async (req, res) => {
   if (!req.body) {
     return res.json({

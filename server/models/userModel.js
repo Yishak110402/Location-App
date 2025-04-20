@@ -18,6 +18,10 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
   groups: [],
+  ghostMode: Boolean,
+  profilePicture: {
+    type: String,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
