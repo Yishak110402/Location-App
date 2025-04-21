@@ -1,8 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
 import { Platform, Pressable, StyleSheet } from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function LogInScreen() {
+    const navigation = useNavigation()
+    const goToSignUp = ()=>{
+        navigation.navigate("Sign Up")
+    }
+    const goToMainScreen = ()=>{
+        navigation.navigate("Main")
+    }
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -16,9 +24,14 @@ export default function LogInScreen() {
             <Text>Password</Text>
             <TextInput style={styles.input} secureTextEntry={true} />
           </View>
-          <Pressable>
+          <Pressable onPress={goToMainScreen}>
             <View>
-                <Text>Sign Up</Text>
+                <Text>Log In</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={goToSignUp}>
+            <View>
+                <Text>I don't have an account</Text>
             </View>
           </Pressable>
         </View>

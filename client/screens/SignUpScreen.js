@@ -1,8 +1,13 @@
+import { useNavigation } from "@react-navigation/native";
 import { Platform, Pressable, StyleSheet } from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 export default function SignUpScreen() {
+  const navigation = useNavigation();
+  const goToLogIn = () => {
+    navigation.navigate("Log In")
+  };
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -26,7 +31,12 @@ export default function SignUpScreen() {
           </View>
           <Pressable>
             <View>
-                <Text>Sign Up</Text>
+              <Text>Sign Up</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={goToLogIn}>
+            <View>
+              <Text>I have an account</Text>
             </View>
           </Pressable>
         </View>
@@ -38,28 +48,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingInline: 5,
-    paddingBlock: 10
+    paddingBlock: 10,
   },
-  headerText:{
+  headerText: {
     fontSize: 25,
-    fontFamily:"Montserrat-Regular"
+    fontFamily: "Montserrat-Regular",
   },
-  formContainer:{
+  formContainer: {
     flex: 1,
-    justifyContent:'center',
-    paddingInline: 5
+    justifyContent: "center",
+    paddingInline: 5,
   },
-  inputContainer:{
-    display:'flex',
-    flexDirection:'row',
+  inputContainer: {
+    display: "flex",
+    flexDirection: "row",
     gap: 5,
-    justifyContent:'space-between',
+    justifyContent: "space-between",
     marginBottom: 5,
-    alignItems:'center'
+    alignItems: "center",
   },
-  input:{
+  input: {
     borderWidth: 1,
     width: "75%",
-    borderRadius: 5
-  }
+    borderRadius: 5,
+  },
 });

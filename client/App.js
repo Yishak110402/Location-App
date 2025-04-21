@@ -11,6 +11,8 @@ import { Ionicons } from "@expo/vector-icons";
 import Settings from "./screens/Settings";
 import SignUpScreen from "./screens/SignUpScreen";
 import { useFonts } from "expo-font";
+import LogInScreen from "./screens/LogInScreen";
+import MapScreen from "./screens/MapScreen";
 
 export default function App() {
   const Drawer = createDrawerNavigator();
@@ -32,7 +34,8 @@ export default function App() {
           },
           tabBarInactiveTintColor: "#262626",
           tabBarLabelStyle: {
-            fontSize: 15,
+            fontSize: 13,
+            fontFamily:"Montserrat-Regular"
           },
         }}>
         <Tabs.Screen
@@ -70,9 +73,11 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor="#f7f7f7" translucent={false} />
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Sign Up" screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false, animation:'fade' }}>
           <Stack.Screen name="Main" component={TabsNavFlow} />
           <Stack.Screen name="Sign Up" component={SignUpScreen} />
+          <Stack.Screen name="Log In" component={LogInScreen} />
+          <Stack.Screen name="Map Screen" component={MapScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
