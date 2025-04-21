@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema({
   name: String,
-  members: Array,
+  members: [],
   owner: String,
   groupProfilePicture: {
     type: String,

@@ -43,6 +43,10 @@ exports.createGroup = async (req, res) => {
     members: [ownerId]
   });
 
+  const ownerUser = await User.findById(ownerId)
+  const newGroupsList = ownerUser.groups.push(newGroup._id)
+  const updatedUser = await User.findByIdAndUpdate(ownerId, {groups: newGroupsList})
+
   return res.json({
     status: "success",
     data: {
@@ -50,3 +54,51 @@ exports.createGroup = async (req, res) => {
     },
   });
 };
+exports.leaveGroup = async(req, res)=>{
+  const {id} = req.params
+  const {memberId} = req.body
+  const wantedGroup = await Group.findById(id)
+  const newMembersList = wantedGroup.members.filter((member)=>{
+    return member._id !== memberId
+  })
+  wantedGroup.members = newMembersList
+  const edittedGroup = await Group.findByIdAndUpdate(id, {
+    members: newMembersList
+  }, {new: true})
+  return res.json({
+    status:'success',
+    message:"Group left successfully"
+  })
+}
+exports.deleteGroup = async(req, res)=>{
+  const {id} = req.params
+  if(!id){
+    return res.json({
+      status:"fail",
+      message:"No ID provided"
+    })
+  }
+  const validId = isDefaultMongoId(id)
+  if(!validId){
+    return res.json({
+      status:"fail",
+      message:"Invalid ID"
+    })
+  }
+  const deletedGroup = await Group.findByIdAndDelete(id)
+  console.log(deletedGroup);
+  
+  if(!deletedGroup){
+    return res.json({
+      status:"fail",
+      message:"Couldn't find group"
+    })
+  }
+  const containingUsers = await User.updateMany({groups: id},{$pull:{groups: id}})
+  console.log(containingUsers);
+  
+  return res.json({
+    status:"success",
+    message:"Deleted Successfully"
+  })
+}
