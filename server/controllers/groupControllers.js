@@ -30,8 +30,6 @@ exports.createGroup = async (req, res) => {
     name: name,
   });
 
-  console.log(checkGroup);
-
   if (checkGroup.length !== 0) {
     return res.json({
       status: "fail",
