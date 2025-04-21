@@ -3,12 +3,14 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoute");
 const groupRouter = require("./routes/groupRoutes")
+const invitationRouter = require("./routes/invitationRoutes")
 
 const app = express();
 app.use(cors());
 app.use(express.json())
 app.use("/user", userRouter);
 app.use("/group", groupRouter)
+app.use("/invitation", invitationRouter)
 
 mongoose.connect(
   "mongodb://127.0.0.1:27017/locationapp",
@@ -29,6 +31,12 @@ app.all("/", (req, res) => {
     message: "Welcome to the Location App API",
   });
 });
+app.all("/*", (req, res)=>{
+  return res.json({
+    status:"fail",
+    message:`Can't ${req.method} to ${req.originalUrl}`
+  })
+})
 app.listen(6969, () => {
   console.log("Listening on Port 6969");
 });

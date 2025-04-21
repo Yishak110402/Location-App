@@ -34,12 +34,13 @@ exports.createGroup = async (req, res) => {
     return res.json({
       status: "fail",
       message: "You already own a group with that name",
-    });
-  }
-
-  const newGroup = await Group.create({
+    }); 
+  } 
+ 
+  const newGroup = await Group.create({ 
     name,
     owner: ownerId,
+    members: [ownerId]
   });
 
   return res.json({

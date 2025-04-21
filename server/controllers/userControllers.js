@@ -1,8 +1,8 @@
 const User = require("./../models/userModel");
 const validate = require("validator");
 const bcrypt = require("bcryptjs");
-const isDefaultMongoId = require("./../utils/checkMongoId")
-
+const isDefaultMongoId = require("./../utils/checkMongoId");
+const isValidUsername = require("../utils/validateUsername");
 
 exports.createUser = async (req, res) => {
   if (!req.body) {
@@ -11,7 +11,7 @@ exports.createUser = async (req, res) => {
       message: "No Body",
     });
   }
-  const { name, email, password } = req.body;
+  const { name, email, password, username, gender } = req.body;
   if (!name) {
     return res.json({
       status: "fail",
@@ -30,6 +30,18 @@ exports.createUser = async (req, res) => {
       message: "You must enter a password",
     });
   }
+  if (!username) {
+    return res.json({
+      status: "fail",
+      message: "Please enter a username",
+    });
+  }
+  if (!gender) {
+    return res.json({
+      status: "fail",
+      message: "You must enter your gender",
+    });
+  }
 
   const validEmail = validate.isEmail(email);
   if (!validEmail) {
@@ -45,8 +57,30 @@ exports.createUser = async (req, res) => {
       message: "Password must be at least 8 characters",
     });
   }
+
+  const validUserName = isValidUsername(username);
+  if (!validUserName.isValid) {
+    return res.json({
+      status: "fail",
+      message: validUserName.errors,
+    });
+  }
+  const usernameCheck = await User.findOne({ username });
+  if (usernameCheck) {
+    return res.json({
+      status: "fail",
+      message: "Username is already taken.",
+    });
+  }
+  console.log(gender.toLowerCase());
+  
+  if(gender.toLowerCase() !== "male" && gender.toLowerCase() !== "female"){
+    return res.json({
+      status:"fail",
+      message:"Please enter valid gender values"
+    })
+  }
   const checkUser = await User.find({ email });
-  console.log(checkUser);
   if (checkUser.length !== 0) {
     return res.json({
       status: "fail",
@@ -58,6 +92,8 @@ exports.createUser = async (req, res) => {
     name,
     email,
     password: hashedPassword,
+    username,
+    gender: gender.toLowerCase()
   });
   return res.json({
     status: "success",

@@ -13,7 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  currentLocation: {
+  username:{
+    type: String,
+  },
+  lastLocation: {
     type: String,
     default: null,
   },
@@ -22,6 +25,9 @@ const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
   },
+  gender:{
+    type: String,
+  }
 });
 
 const User = mongoose.model("User", userSchema);
