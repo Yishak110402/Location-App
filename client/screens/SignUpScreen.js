@@ -1,13 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
-import { Platform, Pressable, StyleSheet } from "react-native";
+import { useState } from "react";
+import { Modal, Pressable, StyleSheet } from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import SelectOption from "../components/SignUpScreen/SelectOption";
 
 export default function SignUpScreen() {
+  const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
   const goToLogIn = () => {
-    navigation.navigate("Log In")
+    navigation.navigate("Log In");
   };
+  const options = ["male", "female"];
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -41,6 +45,18 @@ export default function SignUpScreen() {
           </Pressable>
         </View>
       </View>
+      <Modal visible={true}>
+        <View style={styles.modal}>
+          <Text>Select Gender</Text>
+          <View>
+            {
+                options.map((opt, index)=>(
+                    <SelectOption option={opt} index={index} />
+                ))
+            }
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -72,4 +88,15 @@ const styles = StyleSheet.create({
     width: "75%",
     borderRadius: 5,
   },
+  modalContainer:{
+    backgroundColor: "rgba(0,0,0,0.5)",
+    borderWidth: 2
+  },
+  modal:{
+    // position: 'absolute',
+    // zIndex: 100,
+    // bottom: -100,
+    // right: 0,
+    marginTop: 100
+  }
 });

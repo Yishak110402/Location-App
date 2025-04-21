@@ -14,7 +14,7 @@ export default function LogInScreen() {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.headerText}>Create Account</Text>
+        <Text style={styles.headerText}>Log In</Text>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <Text>Email</Text>

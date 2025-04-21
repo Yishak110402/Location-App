@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "my-new-app",
+    "name": "Circle Track",
     "slug": "my-new-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yishak36.studymateeee"
+      "package": "com.yishak36.circletrack"
     },
     "web": {
       "favicon": "./assets/favicon.png"

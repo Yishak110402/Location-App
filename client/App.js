@@ -13,6 +13,7 @@ import SignUpScreen from "./screens/SignUpScreen";
 import { useFonts } from "expo-font";
 import LogInScreen from "./screens/LogInScreen";
 import MapScreen from "./screens/MapScreen";
+import { AuthProvider } from "./context/authContext";
 
 export default function App() {
   const Drawer = createDrawerNavigator();
@@ -20,9 +21,9 @@ export default function App() {
   const Stack = createNativeStackNavigator();
 
   useFonts({
-    "Poppins": require("./assets/fonts/Poppins-Regular.ttf"),
-    "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf")
-  })
+    Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
+    "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+  });
 
   const TabsNavFlow = () => {
     return (
@@ -35,7 +36,7 @@ export default function App() {
           tabBarInactiveTintColor: "#262626",
           tabBarLabelStyle: {
             fontSize: 13,
-            fontFamily:"Montserrat-Regular"
+            fontFamily: "Montserrat-Regular",
           },
         }}>
         <Tabs.Screen
@@ -72,14 +73,18 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor="#f7f7f7" translucent={false} />
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Main" screenOptions={{ headerShown: false, animation:'fade' }}>
-          <Stack.Screen name="Main" component={TabsNavFlow} />
-          <Stack.Screen name="Sign Up" component={SignUpScreen} />
-          <Stack.Screen name="Log In" component={LogInScreen} />
-          <Stack.Screen name="Map Screen" component={MapScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Sign Up"
+            screenOptions={{ headerShown: false, animation: "fade" }}>
+            <Stack.Screen name="Main" component={TabsNavFlow} />
+            <Stack.Screen name="Sign Up" component={SignUpScreen} />
+            <Stack.Screen name="Log In" component={LogInScreen} />
+            <Stack.Screen name="Map Screen" component={MapScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }
