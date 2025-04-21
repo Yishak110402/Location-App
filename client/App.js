@@ -9,11 +9,18 @@ import { StatusBar } from "expo-status-bar";
 import InvitationsScreen from "./screens/InvitationsScreen";
 import { Ionicons } from "@expo/vector-icons";
 import Settings from "./screens/Settings";
+import SignUpScreen from "./screens/SignUpScreen";
+import { useFonts } from "expo-font";
 
 export default function App() {
   const Drawer = createDrawerNavigator();
   const Tabs = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
+
+  useFonts({
+    "Poppins": require("./assets/fonts/Poppins-Regular.ttf"),
+    "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf")
+  })
 
   const TabsNavFlow = () => {
     return (
@@ -63,8 +70,9 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor="#f7f7f7" translucent={false} />
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator initialRouteName="Sign Up" screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Main" component={TabsNavFlow} />
+          <Stack.Screen name="Sign Up" component={SignUpScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
