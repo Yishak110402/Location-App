@@ -14,6 +14,7 @@ import { useFonts } from "expo-font";
 import LogInScreen from "./screens/LogInScreen";
 import MapScreen from "./screens/MapScreen";
 import { AuthProvider } from "./context/authContext";
+import { GeneralProvider } from "./context/generalContext";
 
 export default function App() {
   const Drawer = createDrawerNavigator();
@@ -73,18 +74,20 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor="#f7f7f7" translucent={false} />
-      <AuthProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Sign Up"
-            screenOptions={{ headerShown: false, animation: "fade" }}>
-            <Stack.Screen name="Main" component={TabsNavFlow} />
-            <Stack.Screen name="Sign Up" component={SignUpScreen} />
-            <Stack.Screen name="Log In" component={LogInScreen} />
-            <Stack.Screen name="Map Screen" component={MapScreen} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AuthProvider>
+      <GeneralProvider>
+        <AuthProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Sign Up"
+              screenOptions={{ headerShown: false, animation: "fade" }}>
+              <Stack.Screen name="Main" component={TabsNavFlow} />
+              <Stack.Screen name="Sign Up" component={SignUpScreen} />
+              <Stack.Screen name="Log In" component={LogInScreen} />
+              <Stack.Screen name="Map Screen" component={MapScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthProvider>
+      </GeneralProvider>
     </GestureHandlerRootView>
   );
 }
