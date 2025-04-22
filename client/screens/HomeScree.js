@@ -1,9 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Pressable, StyleSheet } from "react-native";
 import { Text, View } from "react-native";
+import { GeneralContext } from "../context/generalContext";
 
 export default function HomeScreen() {
+  const {fetchUserGroups} = useContext(GeneralContext)
+  useEffect(()=>{
+    fetchUserGroups()
+  },[])
   return (
     <View style={styles.container}>
       
