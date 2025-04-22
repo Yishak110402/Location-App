@@ -4,17 +4,9 @@ import { Pressable, StyleSheet } from "react-native";
 import { Text, View } from "react-native";
 
 export default function HomeScreen() {
-    const navigation = useNavigation()
-    const goToMap=()=>{
-      navigation.navigate("Map Screen")
-    }
   return (
     <View style={styles.container}>
-      <Pressable onPress={goToMap} style={styles.btnContainer}>
-        <View>
-          <Text style={styles.btnText}>Go To Map</Text>
-        </View>
-      </Pressable>
+      
     </View>
   );
 }

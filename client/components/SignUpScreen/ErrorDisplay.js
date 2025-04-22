@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
 import { Text, View } from "react-native";
 
-export default function ErrorDisplay(){
+export default function ErrorDisplay({err}){
     return(
         <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>Error Text will be displayed here if it is here</Text>
+            <Text style={styles.errorText}>{err}</Text>
         </View>
     )
 }

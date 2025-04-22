@@ -9,7 +9,7 @@ import ErrorDisplay from "../components/SignUpScreen/ErrorDisplay";
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
-  const { signUpData, setSignUpData, error, showError } = useContext(AuthContext);
+  const { signUpData, setSignUpData, error, showError, signUp } = useContext(AuthContext);
   const navigation = useNavigation();
   const goToLogIn = () => {
     navigation.navigate("Log In");
@@ -19,11 +19,11 @@ export default function SignUpScreen() {
     <KeyboardAvoidingView style={{ flex: 1 }}>
       {showError && (
         <View style={styles.errorsContainer}>
-          <ErrorDisplay />
-          <ErrorDisplay />
-          <ErrorDisplay />
-          <ErrorDisplay />
-          <ErrorDisplay />
+          {
+            error.map((err)=>(
+              <ErrorDisplay err={err} />
+            ))
+          }
         </View>
       )}
       <View style={styles.container}>
@@ -46,6 +46,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, email: text }))
               }
+              autoCapitalize='none'
             />
           </View>
           <View style={styles.inputContainer}>
@@ -55,6 +56,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, username: text }))
               }
+              autoCapitalize='none'
             />
           </View>
           <View style={styles.inputContainer}>
@@ -65,6 +67,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, password: text }))
               }
+              autoCapitalize='none'
             />
           </View>
           <View style={styles.selectContainer}>
@@ -79,7 +82,7 @@ export default function SignUpScreen() {
               </View>
             </Pressable>
           </View>
-          <Pressable>
+          <Pressable onPress={signUp}>
             <View>
               <Text>Sign Up</Text>
             </View>

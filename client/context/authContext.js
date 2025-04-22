@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { GeneralContext } from "./generalContext";
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 export const AuthContext = createContext();
 
@@ -16,6 +18,7 @@ export function AuthProvider({ children }) {
   });
   const [error, setError] = useState([]);
   const [showError, setShowError] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (!showError) {
@@ -29,14 +32,19 @@ export function AuthProvider({ children }) {
     };
   }, [showError]);
 
-  const testApi = async () => {
-    const res = await fetch(localIp);
-    const data = await res.json();
-    console.log(data);
-  };
+const checkUser = async()=>{
+    const loggedInUser = await AsyncStorage.getItem("current-user")
+    if(!loggedInUser){
+        navigation.navigate("Sign Up")
+        return
+    }
+    navigation.navigate("Main")
+}
+
 
   const signUp = async () => {
     setError([]);
+    setShowError(false);
     if (Object.values(signUpData).includes("")) {
       if (signUpData.name === "") {
         setError((errs) => [...errs, "You must enter a name"]);
@@ -59,6 +67,7 @@ export function AuthProvider({ children }) {
           "Your password must have at least 8 characters",
         ]);
       }
+      setShowError(true);
       return;
     }
     const res = await fetch(`${localIp}/user`, {
@@ -70,6 +79,8 @@ export function AuthProvider({ children }) {
         name: signUpData.name,
         email: signUpData.email,
         username: signUpData.username,
+        password: signUpData.password,
+        gender: signUpData.gender,
       }),
     });
     if (!res.ok) {
@@ -81,7 +92,9 @@ export function AuthProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
-    console.log(data);
+    const user = data.data.user;
+    await AsyncStorage.setItem("current-user", JSON.stringify(user));
+    navigation.navigate("Main");
   };
 
   const value = {
@@ -89,7 +102,8 @@ export function AuthProvider({ children }) {
     setSignUpData,
     signUp,
     error,
-    showError
+    showError,
+    checkUser
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
