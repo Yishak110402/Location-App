@@ -102,3 +102,19 @@ exports.deleteGroup = async(req, res)=>{
     message:"Deleted Successfully"
   })
 }
+exports.fetchUserGroups = async(req, res)=>{
+  const {userId} = req.params
+  if(!userId){
+    return res.json({
+      status:"fail",
+      message:"You need to provide an ID"
+    })
+  }
+  const usersGroups = await Group.find({members: userId})
+  return res.json({
+    status:"success",
+    data:{
+      groups: usersGroups
+    }
+  })
+}
