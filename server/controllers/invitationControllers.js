@@ -19,11 +19,11 @@ exports.sendInvitation = async (req, res) => {
       message: "Invalid Ids",
     });
   }
-  if(invitedUserId === senderId){
+  if (invitedUserId === senderId) {
     return res.json({
-      status:"fail",
-      message:"Feeling lonely huh. Sorry you can't invite yourself"
-    })
+      status: "fail",
+      message: "Feeling lonely huh. Sorry you can't invite yourself",
+    });
   }
   const wantedGroup = await Group.findById(invitedGroup);
   if (!wantedGroup) {
@@ -42,13 +42,13 @@ exports.sendInvitation = async (req, res) => {
 
   const checkInvitations = await Invitation.find({
     invitedUser: invitedUserId,
-    invitedToGroup: invitedGroup
-  })
-  if(checkInvitations.length !== 0){
+    invitedToGroup: invitedGroup,
+  });
+  if (checkInvitations.length !== 0) {
     return res.json({
-      status:"fail",
-      message:"You have already invited this user"
-    })
+      status: "fail",
+      message: "You have already invited this user",
+    });
   }
   const newInvitation = await Invitation.create({
     invitedUser: invitedUserId,
@@ -79,6 +79,11 @@ exports.acceptInvitation = async (req, res) => {
     },
     { new: true }
   );
+  const invitedUser = await User.findById(wantedInvitation.invitedUserId);
+  invitedUser.members.push(wantedGroup._id);
+  const updatedUser = await User.findByIdAndUpdate(invitedUser._id, {
+    members: invitedUser.members,
+  });
   return res.json({
     status: "success",
     data: {
@@ -86,28 +91,27 @@ exports.acceptInvitation = async (req, res) => {
     },
   });
 };
-exports.rejectInvitation = async(req, res) =>{
-    const {id} = req.params
-    const deletedInvitation = await Invitation.findByIdAndDelete(id)
+exports.rejectInvitation = async (req, res) => {
+  const { id } = req.params;
+  const deletedInvitation = await Invitation.findByIdAndDelete(id);
+  return res.json({
+    status: "fail",
+    message: "Invitation rejected successfully",
+  });
+};
+exports.getUserInvitations = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
     return res.json({
-        status:"fail",
-        message:"Invitation rejected successfully"
-    })
-    
-}
-exports.getUserInvitations = async(req, res)=>{
-    const {id} = req.params
-    if(!id){
-        return res.json({
-            status:"fail",
-            message:"An ID must be provided"
-        })
-    }
-    const invitations = await Invitation.find({invitedUser: id})
-    return res.json({
-        status:"success",
-        data:{
-            invitations
-        }
-    })
-}
+      status: "fail",
+      message: "An ID must be provided",
+    });
+  }
+  const invitations = await Invitation.find({ invitedUser: id });
+  return res.json({
+    status: "success",
+    data: {
+      invitations,
+    },
+  });
+};
