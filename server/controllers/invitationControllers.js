@@ -19,6 +19,12 @@ exports.sendInvitation = async (req, res) => {
       message: "Invalid Ids",
     });
   }
+  if(invitedUserId === senderId){
+    return res.json({
+      status:"fail",
+      message:"Feeling lonely huh. Sorry you can't invite yourself"
+    })
+  }
   const wantedGroup = await Group.findById(invitedGroup);
   if (!wantedGroup) {
     return res.json({
@@ -34,6 +40,16 @@ exports.sendInvitation = async (req, res) => {
     });
   }
 
+  const checkInvitations = await Invitation.find({
+    invitedUser: invitedUserId,
+    invitedToGroup: invitedGroup
+  })
+  if(checkInvitations.length !== 0){
+    return res.json({
+      status:"fail",
+      message:"You have already invited this user"
+    })
+  }
   const newInvitation = await Invitation.create({
     invitedUser: invitedUserId,
     invitedToGroup: invitedGroup,

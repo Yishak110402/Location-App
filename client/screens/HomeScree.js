@@ -5,9 +5,10 @@ import { Text, View } from "react-native";
 import { GeneralContext } from "../context/generalContext";
 import GroupListItem from "../components/Groups/GroupListItem";
 import CreateGroupModal from "../components/Groups/CreateGroupModal";
+import { GroupContext } from "../context/groupContext";
 
 export default function HomeScreen() {
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(true)
+  const {showCreateGroupModal, setShowCreateGroupModal} = useContext(GroupContext)
   const { fetchUserGroups, allGroups, loadingGroups } =
     useContext(GeneralContext);
   useEffect(() => {
@@ -26,6 +27,15 @@ export default function HomeScreen() {
           <View style={styles.noGroupTextContainer}>
             <Text style={styles.noGroupText}>You are not in any groups!</Text>
           </View>
+        )}
+        {!loadingGroups && allGroups.length !== 0 &&(
+          <ScrollView>
+            {
+              allGroups.map((group)=>(
+                <GroupListItem group={group}/>
+              ))
+            }
+          </ScrollView>
         )}
       </View>
       <Pressable onPress={()=>(setShowCreateGroupModal(true))}>

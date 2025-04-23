@@ -16,6 +16,10 @@ import MapScreen from "./screens/MapScreen";
 import { AuthProvider } from "./context/authContext";
 import { GeneralProvider } from "./context/generalContext";
 import InitialLoadingScreen from "./screens/InitialLoadingScreen";
+import { GroupProvider } from "./context/groupContext";
+import OpenGroupScreen from "./screens/OpenGroupScreen";
+import TestSocketScreen from "./screens/TestSocketScreen";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
   const Drawer = createDrawerNavigator();
@@ -74,22 +78,33 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar style="dark" backgroundColor="#f7f7f7" translucent={false} />
-      <NavigationContainer>
-        <GeneralProvider>
-          <AuthProvider>
-            <Stack.Navigator
-              initialRouteName="Initial Loading"
-              screenOptions={{ headerShown: false, animation: "fade" }}>
-              <Stack.Screen name="Initial Loading" component={InitialLoadingScreen} />
-              <Stack.Screen name="Main" component={TabsNavFlow} />
-              <Stack.Screen name="Sign Up" component={SignUpScreen} />
-              <Stack.Screen name="Log In" component={LogInScreen} />
-              <Stack.Screen name="Map Screen" component={MapScreen} />
-            </Stack.Navigator>
-          </AuthProvider>
-        </GeneralProvider>
-      </NavigationContainer>
+      <SafeAreaView style={{flex: 1}}>
+        <StatusBar backgroundColor="transparent" style="dark" translucent={true} />
+        <NavigationContainer>
+          <GeneralProvider>
+            <AuthProvider>
+              <GroupProvider>
+                <Stack.Navigator
+                  initialRouteName="Initial Loading"
+                  screenOptions={{ headerShown: false, animation: "fade" }}>
+                  <Stack.Screen
+                    name="Initial Loading"
+                    component={InitialLoadingScreen}
+                  />
+                  <Stack.Screen name="Main" component={TabsNavFlow} />
+                  <Stack.Screen name="Sign Up" component={SignUpScreen} />
+                  <Stack.Screen name="Log In" component={LogInScreen} />
+                  <Stack.Screen name="Map Screen" component={MapScreen} />
+                  <Stack.Screen
+                    name="Open Group Screen"
+                    component={OpenGroupScreen}
+                  />
+                </Stack.Navigator>
+              </GroupProvider>
+            </AuthProvider>
+          </GeneralProvider>
+        </NavigationContainer>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 }

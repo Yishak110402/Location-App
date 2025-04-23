@@ -3,6 +3,7 @@ const validate = require("validator");
 const bcrypt = require("bcryptjs");
 const isDefaultMongoId = require("./../utils/checkMongoId");
 const isValidUsername = require("../utils/validateUsername");
+const { options } = require("../routes/userRoute");
 
 exports.createUser = async (req, res) => {
   if (!req.body) {
@@ -73,12 +74,12 @@ exports.createUser = async (req, res) => {
     });
   }
   console.log(gender.toLowerCase());
-  
-  if(gender.toLowerCase() !== "male" && gender.toLowerCase() !== "female"){
+
+  if (gender.toLowerCase() !== "male" && gender.toLowerCase() !== "female") {
     return res.json({
-      status:"fail",
-      message:"Please enter valid gender values"
-    })
+      status: "fail",
+      message: "Please enter valid gender values",
+    });
   }
   const checkUser = await User.find({ email });
   if (checkUser.length !== 0) {
@@ -93,7 +94,7 @@ exports.createUser = async (req, res) => {
     email,
     password: hashedPassword,
     username,
-    gender: gender.toLowerCase()
+    gender: gender.toLowerCase(),
   });
   return res.json({
     status: "success",
@@ -222,6 +223,25 @@ exports.fetchUser = async (req, res) => {
     status: "success",
     data: {
       user: wantedUser,
+    },
+  });
+};
+exports.findUserByUsername = async (req, res) => {
+  const {username} = req.params;
+  if (!username) {
+    return res.json({
+      status: "fail",
+      message: "No username provided",
+    });
+  }
+  const exp = new RegExp("^" + username);
+  const queryResult = await User.find({
+    username: exp,
+  });
+  return res.json({
+    status: "success",
+    data: {
+      result: queryResult,
     },
   });
 };
