@@ -12,6 +12,7 @@ export function GroupProvider({ children }) {
   const [showUsernameSearchModal, setShowUsernameSearchModal] = useState(false);
   const [usernameQuery, setUsernamequery] = useState("");
   const [usernameSearchResults, setUsernameSearchResults] = useState([]);
+  const [allInvitations, setAllInvitations] = useState([]);
 
   const createGroup = async () => {
     if (newGroupName === "") {
@@ -53,66 +54,86 @@ export function GroupProvider({ children }) {
     setAllGroups((groups) => [data.data.group, ...groups]);
   };
   const sendInvitation = async (invitedUserId, invitedGroup) => {
-    if(!invitedUserId || !invitedGroup){
-      Alert.alert("Error", "Missing Data")
-      return
+    if (!invitedUserId || !invitedGroup) {
+      Alert.alert("Error", "Missing Data");
+      return;
     }
-    const loggedInUser = await AsyncStorage.getItem("current-user")
-    if(!loggedInUser){
-      Alert.alert("Error", "No User ID Found")
-      return
+    const loggedInUser = await AsyncStorage.getItem("current-user");
+    if (!loggedInUser) {
+      Alert.alert("Error", "No User ID Found");
+      return;
     }
-    const parsedUser = JSON.parse(loggedInUser)
-    const senderId = parsedUser._id
-    const res = await fetch(`${localIp}/invitation`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
+    const parsedUser = JSON.parse(loggedInUser);
+    const senderId = parsedUser._id;
+    const res = await fetch(`${localIp}/invitation`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         invitedUserId,
         invitedGroup,
-        senderId
-      })
-    })
-    if(!res.ok){
-      Alert.alert("Error", "Unable to connect to the server")
-      return
+        senderId,
+      }),
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
     }
-    const data = await res.json()
-    if(data.status === "fail"){
-      Alert.alert("Error", data.message)
-      return
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
     }
-    console.log(data)
+    console.log(data);
   };
-
   const findByUsername = async () => {
     if (usernameQuery === "") {
-      setUsernameSearchResults([])
+      setUsernameSearchResults([]);
       return;
     }
     const res = await fetch(`${localIp}/user/username/${usernameQuery}`);
-    if(!res.ok){
-      Alert.alert("Error","Failed to connect to the server")
-      return
+    if (!res.ok) {
+      Alert.alert("Error", "Failed to connect to the server");
+      return;
     }
-    const data = await res.json()
-    if(data.status === "fail"){
-      Alert.alert("Error", data.message)
-      return
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
     }
-    console.log(data.data.result[0].username);    
-    setUsernameSearchResults(data.data.result)    
+    console.log(data.data.result[0].username);
+    setUsernameSearchResults(data.data.result);
   };
-  useEffect(()=>{
-    const timeOut = setTimeout(()=>{
-      findByUsername()
-    },500)
-    return ()=>{
-      clearTimeout(timeOut)
+  const loadAllInvitations = async () => {
+    const loggedInUser = await AsyncStorage.getItem("current-user");
+    if (!loggedInUser) {
+      Alert.alert("Error", "No Logged In User Found");
+      return;
     }
-  },[usernameQuery])
+    const parsedUser = JSON.parse(loggedInUser);
+    const id = parsedUser._id;
+    const res = await fetch(`${localIp}/invitation/${id}`);
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+    }
+    console.log(data.data);
+    setAllInvitations(data.data.invitations);
+  };
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      findByUsername();
+    }, 500);
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [usernameQuery]);
 
   const value = {
     showCreateGroupModal,
@@ -127,7 +148,8 @@ export function GroupProvider({ children }) {
     findByUsername,
     usernameSearchResults,
     setUsernameSearchResults,
-    sendInvitation
+    sendInvitation,
+    loadAllInvitations,
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>

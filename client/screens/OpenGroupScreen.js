@@ -92,5 +92,3 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
   },
 });
-
-// Accept Invitation
