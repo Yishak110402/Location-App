@@ -16,6 +16,7 @@ export function GroupProvider({ children }) {
   const [usernameSearchResults, setUsernameSearchResults] = useState([]);
   const [allInvitations, setAllInvitations] = useState([]);
   const [groupMembersLocations, setGroupMembersLocations] = useState([]);
+  const [availableMembersIds, setAvailableMembersIds] = useState([])
 
   const createGroup = async () => {
     if (newGroupName === "") {
@@ -219,6 +220,8 @@ export function GroupProvider({ children }) {
     acceptInvitation,
     groupMembersLocations,
     setGroupMembersLocations,
+    availableMembersIds,
+    setAvailableMembersIds
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>

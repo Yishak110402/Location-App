@@ -1,7 +1,17 @@
 import { useRoute } from "@react-navigation/native";
-import { Alert, FlatList, Pressable, ScrollView, StyleSheet } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { Text, TextInput, View } from "react-native";
-import MapView, { PROVIDER_DEFAULT, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 import GroupMember from "../components/OpenGroupScreen/GroupMember";
 import SearchUserModal from "../components/OpenGroupScreen/SearchUserModal";
 import { useContext, useEffect } from "react";
@@ -11,9 +21,16 @@ import { socket } from "../utils/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function OpenGroupScreen() {
-  const { setShowUsernameSearchModal } = useContext(GroupContext);
-  const { getCurrentLocation, location, setLocation } =
+  const {
+    setShowUsernameSearchModal,
+    availableMembersIds,
+    setAvailableMembersIds,
+    groupMembersLocations,
+    setGroupMembersLocations,
+  } = useContext(GroupContext);
+  const { getCurrentLocation, location, setLocation, currentUser } =
     useContext(GeneralContext);
+
   const route = useRoute();
   const currGroup = route.params.group;
   const INITIAL_REGION = {
@@ -68,7 +85,6 @@ export default function OpenGroupScreen() {
       socket.emit("joinRoom", {
         room: currGroup._id,
         details: {
-          state: "all locations",
           location: {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -78,13 +94,18 @@ export default function OpenGroupScreen() {
       });
     }
     currLocation();
-    // socket.on("receivedLocation", (message) => {
-    //   console.log(message);
-    // });
-    socket.on("joined",(message)=>{
-      console.log(message)
-      Alert.alert("error",JSON.stringify(message))
-    })
+    socket.on("initialLocations", (message) => {
+      const ids = Object.keys(message.data);
+      setAvailableMembersIds(ids);
+      const locations = [];
+      for (let i = 0; i < ids.length; i++) {
+        console.log(message.data[ids[i]]);
+        locations.push(message.data[ids[i]]);
+      }
+      console.log(locations);
+      console.log(locations.length);      
+      setGroupMembersLocations(locations);
+    });
   }, [socket]);
 
   return (
@@ -94,8 +115,13 @@ export default function OpenGroupScreen() {
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           initialRegion={INITIAL_REGION}
-            // customMapStyle={darkMapStyle}
-        />
+          // customMapStyle={darkMapStyle}
+        >
+          {groupMembersLocations.length !== 0 &&
+            groupMembersLocations.map((location, idx) => (
+              <Marker key={idx} title={currentUser._id} coordinate={location.location} />
+            ))}
+        </MapView>
       </View>
       <View style={{ flex: 0.4 }}>
         <Text style={styles.membersHeader}>Members</Text>

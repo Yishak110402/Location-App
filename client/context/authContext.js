@@ -43,6 +43,7 @@ export function AuthProvider({ children }) {
       navigation.navigate("Sign Up");
       return;
     }
+    setCurrentUser(JSON.parse(loggedInUser))
     navigation.navigate("Main");
   };
 

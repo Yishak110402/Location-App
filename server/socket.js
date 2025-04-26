@@ -12,12 +12,14 @@ function setupSocket(serverIo) {
     });
     socket.on("joinRoom", ({ room, details }) => {
       socket.join(room);
-      console.log(details);
       if (!usersInGroups[room]) {
         usersInGroups[room] = {};
       }
-      usersInGroups[room][details.id] = { status: "Connected" };
-      socket.emit("joined", { data: usersInGroups });
+      usersInGroups[room][details.id] = {
+        location: details.location,
+        socketId: socket.id
+      };
+      io.to(room).emit("initialLocations", { data: usersInGroups[room] });
     });
   });
 }
