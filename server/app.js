@@ -25,8 +25,10 @@ app.use("/user", userRouter);
 app.use("/group", groupRouter);
 app.use("/invitation", invitationRouter);
 
+const onlineURL =  "mongodb+srv://yishak:rfTtsGRqkPr5ILhL@write-wave.3yjawuk.mongodb.net/locationapp?retryWrites=true&w=majority&appName=write-wave"
+const localURL = "mongodb://127.0.0.1:27017/locationapp"
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/locationapp",
+  onlineURL,
   {
     useCreateIndex: true,
     useNewUrlParser: true,
