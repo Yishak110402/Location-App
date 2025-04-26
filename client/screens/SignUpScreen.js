@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { Modal, Pressable, StyleSheet } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { BackHandler, Modal, Pressable, StyleSheet } from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import SelectOption from "../components/SignUpScreen/SelectOption";
@@ -9,21 +9,32 @@ import ErrorDisplay from "../components/SignUpScreen/ErrorDisplay";
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
-  const { signUpData, setSignUpData, error, showError, signUp } = useContext(AuthContext);
+  const { signUpData, setSignUpData, error, showError, signUp } =
+    useContext(AuthContext);
   const navigation = useNavigation();
   const goToLogIn = () => {
     navigation.navigate("Log In");
   };
+
+  useEffect(() => {
+    const backHandler = () => {
+      return true;
+    };
+    const backPress = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backHandler
+    );
+    return () => backPress.remove()
+  }, []);
+
   const options = ["male", "female"];
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
       {showError && (
         <View style={styles.errorsContainer}>
-          {
-            error.map((err)=>(
-              <ErrorDisplay err={err} />
-            ))
-          }
+          {error.map((err) => (
+            <ErrorDisplay err={err} />
+          ))}
         </View>
       )}
       <View style={styles.container}>
@@ -46,7 +57,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, email: text }))
               }
-              autoCapitalize='none'
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.inputContainer}>
@@ -56,7 +67,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, username: text }))
               }
-              autoCapitalize='none'
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.inputContainer}>
@@ -67,7 +78,7 @@ export default function SignUpScreen() {
               onChangeText={(text) =>
                 setSignUpData((form) => ({ ...form, password: text }))
               }
-              autoCapitalize='none'
+              autoCapitalize="none"
             />
           </View>
           <View style={styles.selectContainer}>

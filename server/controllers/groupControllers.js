@@ -118,3 +118,32 @@ exports.fetchUserGroups = async(req, res)=>{
     }
   })
 }
+exports.getGroupDetails = async(req, res)=>{
+  const {id} = req.params
+  if(!id){
+    return res.json({
+      status:"fail",
+      message:"No ID Provided"
+    })
+  }
+  const isValidId = isDefaultMongoId(id)
+  if(!isValidId){
+    return res.json({
+      status:"fail",
+      message:"The ID provided is invalid"
+    })
+  }
+  const wantedGroup = await Group.findById(id)
+  if(!wantedGroup){
+    return res.json({
+      status:'fail',
+      message:"We weren't able to find the group"
+    })
+  }
+  return res.json({
+    status:"success",
+    data:{
+      group: wantedGroup
+    }
+  })
+}

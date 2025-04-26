@@ -44,9 +44,10 @@ export default function App() {
             fontSize: 13,
             fontFamily: "Montserrat-Regular",
           },
+          
         }}>
         <Tabs.Screen
-          name="Home"
+          name="Groups"
           component={HomeScreen}
           options={{
             tabBarIcon: ({ color, size }) => {

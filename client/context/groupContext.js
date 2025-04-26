@@ -2,10 +2,12 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { GeneralContext } from "./generalContext";
 import { Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 export const GroupContext = createContext();
 
 export function GroupProvider({ children }) {
+  const navigation = useNavigation();
   const { localIp, setAllGroups } = useContext(GeneralContext);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
@@ -125,6 +127,66 @@ export function GroupProvider({ children }) {
     console.log(data.data);
     setAllInvitations(data.data.invitations);
   };
+  const getGroupDetails = async (groupId) => {
+    if (!groupId) {
+      Alert.alert("Error", "Group ID must be provided");
+      return;
+    }
+    const res = await fetch(`${localIp}/group/detail/${groupId}`);
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    console.log(data.data.group);
+    return data.data.group;
+  };
+  const rejectInvitation = async (id) => {
+    console.log(id);
+
+    const res = await fetch(`${localIp}/invitation/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    setAllInvitations((prevList) => prevList.filter(() => prevList._id !== id));
+  };
+  const acceptInvitation = async (id) => {
+    if (!id) {
+      Alert.alert("Error", "No ID provided");
+      return;
+    }
+    const res = await fetch(`${localIp}/invitation/`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ invitationId: id }),
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+    }
+    navigation.navigate("Groups");
+  };
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -150,6 +212,10 @@ export function GroupProvider({ children }) {
     setUsernameSearchResults,
     sendInvitation,
     loadAllInvitations,
+    getGroupDetails,
+    allInvitations,
+    rejectInvitation,
+    acceptInvitation
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>
