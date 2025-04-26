@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { Pressable, ScrollView, StyleSheet } from "react-native";
+import { BackHandler, Pressable, ScrollView, StyleSheet } from "react-native";
 import { Text, View } from "react-native";
 import { GeneralContext } from "../context/generalContext";
 import GroupListItem from "../components/Groups/GroupListItem";
@@ -19,6 +19,13 @@ export default function HomeScreen() {
       clearTimeout(timer);
     };
   }, []);
+  useEffect(()=>{
+    const backPress = ()=>{
+      return true
+    }
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backPress)
+    return ()=> backHandler.remove()
+  },[])
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>

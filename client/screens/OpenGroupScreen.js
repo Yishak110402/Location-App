@@ -1,7 +1,9 @@
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   Alert,
+  BackHandler,
   FlatList,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -21,6 +23,7 @@ import { socket } from "../utils/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function OpenGroupScreen() {
+  const navigation = useNavigation();
   const {
     setShowUsernameSearchModal,
     availableMembersIds,
@@ -94,7 +97,7 @@ export default function OpenGroupScreen() {
       });
     }
     currLocation();
-    socket.on("initialLocations", (message) => {
+    socket.on("updateLocations", (message) => {
       const ids = Object.keys(message.data);
       setAvailableMembersIds(ids);
       const locations = [];
@@ -103,10 +106,22 @@ export default function OpenGroupScreen() {
         locations.push(message.data[ids[i]]);
       }
       console.log(locations);
-      console.log(locations.length);      
+      console.log(locations.length);
       setGroupMembersLocations(locations);
     });
   }, [socket]);
+
+  useEffect(() => {
+    const backPress = () => {
+      socket.disconnect();
+      navigation.navigate("Main");
+    };
+    const backButton = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backPress
+    );
+    return () => backButton.remove();
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -119,7 +134,20 @@ export default function OpenGroupScreen() {
         >
           {groupMembersLocations.length !== 0 &&
             groupMembersLocations.map((location, idx) => (
-              <Marker key={idx} title={currentUser._id} coordinate={location.location} />
+              <Marker
+                key={idx}
+                title={currentUser._id}
+                coordinate={location.location}
+              >
+                <Image source={require("./../assets/profile pic.jpg")}
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 999,
+                  backgroundColor:"green"
+                }}
+                />
+              </Marker>
             ))}
         </MapView>
       </View>

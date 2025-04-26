@@ -1,0 +1,13 @@
+1. git clone https://github.com/Yishak110402/Location-App.git and then open vs code terminal
+2. cd client
+3. npm install
+4. cd ..
+5. cd server
+6. npm install
+7. nodemon app.js
+8. Open another terminal on the side without closing the previous one
+9. cd..
+10. cd..
+11.cd client
+12. npm start
+13. Open expo go on ur phone and scan the qr code
