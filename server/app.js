@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/userRoute");
 const groupRouter = require("./routes/groupRoutes");
 const invitationRouter = require("./routes/invitationRoutes");
+const { setupSocket } = require("./socket");
 const app = express();
 
 const server = http.createServer(app);
@@ -16,14 +17,7 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("User connected: " + socket.id);
-  socket.on("sendLocation", (message) => {
-    console.log(message);
-    socket.emit("receivedLocation",{message:"Location received"})
-  });
-
-});
+setupSocket(io);
 
 app.use(cors());
 app.use(express.json());

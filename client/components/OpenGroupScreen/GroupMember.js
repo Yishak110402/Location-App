@@ -17,7 +17,6 @@ export default function GroupMember({ member }) {
         Alert.alert("Error", data.message);
         return;
       }
-      console.log(data.data.user);
       setMemberData(data.data.user);
     };
     fetchUser();

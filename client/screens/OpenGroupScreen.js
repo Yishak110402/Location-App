@@ -1,16 +1,20 @@
 import { useRoute } from "@react-navigation/native";
-import { FlatList, Pressable, ScrollView, StyleSheet } from "react-native";
+import { Alert, FlatList, Pressable, ScrollView, StyleSheet } from "react-native";
 import { Text, TextInput, View } from "react-native";
 import MapView, { PROVIDER_DEFAULT, PROVIDER_GOOGLE } from "react-native-maps";
 import GroupMember from "../components/OpenGroupScreen/GroupMember";
 import SearchUserModal from "../components/OpenGroupScreen/SearchUserModal";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { GroupContext } from "../context/groupContext";
+import { GeneralContext } from "../context/generalContext";
+import { socket } from "../utils/socket";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function OpenGroupScreen() {
   const { setShowUsernameSearchModal } = useContext(GroupContext);
+  const { getCurrentLocation, location, setLocation } =
+    useContext(GeneralContext);
   const route = useRoute();
-  console.log(route.params.group);
   const currGroup = route.params.group;
   const INITIAL_REGION = {
     latitude: 9.03,
@@ -19,22 +23,78 @@ export default function OpenGroupScreen() {
     longitudeDelta: 2,
   };
   const darkMapStyle = [
-    { elementType: 'geometry', stylers: [{ color: '#1d1d1d' }] },
-    { elementType: 'labels.text.fill', stylers: [{ color: '#8a8a8a' }] },
-    { elementType: 'labels.text.stroke', stylers: [{ color: '#1d1d1d' }] },
-    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2c2c2c' }] },
-    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] }
+    { elementType: "geometry", stylers: [{ color: "#1d1d1d" }] },
+    { elementType: "labels.text.fill", stylers: [{ color: "#8a8a8a" }] },
+    { elementType: "labels.text.stroke", stylers: [{ color: "#1d1d1d" }] },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#2c2c2c" }],
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#000000" }],
+    },
   ];
-  
+
+  useEffect(() => {
+    const updateLocation = async () => {
+      const location = await getCurrentLocation();
+      return location;
+    };
+    const sendLocationInterval = setInterval(async () => {
+      const currLocation = await updateLocation();
+      setLocation((prevLocation) => ({
+        latitude: currLocation.coords.latitude,
+        longitude: currLocation.coords.longitude,
+      }));
+      const currUser = JSON.parse(await AsyncStorage.getItem("current-user"));
+
+      // socket.emit("sendLocation", {
+      //   latitude: currLocation.coords.latitude,
+      //   longitude: currLocation.coords.longitude,
+      //   userId: currUser._id,
+      // });
+    }, 5000);
+    return () => clearInterval(sendLocationInterval);
+  }, []);
+
+  useEffect(() => {
+    socket.connect();
+    async function currLocation() {
+      const currUser = JSON.parse(await AsyncStorage.getItem("current-user"));
+      const location = await getCurrentLocation();
+      socket.emit("joinRoom", {
+        room: currGroup._id,
+        details: {
+          state: "all locations",
+          location: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+          id: currUser._id,
+        },
+      });
+    }
+    currLocation();
+    // socket.on("receivedLocation", (message) => {
+    //   console.log(message);
+    // });
+    socket.on("joined",(message)=>{
+      console.log(message)
+      Alert.alert("error",JSON.stringify(message))
+    })
+  }, [socket]);
+
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           provider={PROVIDER_GOOGLE}
-          showsUserLocation
           initialRegion={INITIAL_REGION}
-        //   customMapStyle={darkMapStyle}
+            // customMapStyle={darkMapStyle}
         />
       </View>
       <View style={{ flex: 0.4 }}>
@@ -55,7 +115,7 @@ export default function OpenGroupScreen() {
           </View>
         </Pressable>
       </View>
-      <SearchUserModal currentGroupId = {currGroup._id} />
+      <SearchUserModal currentGroupId={currGroup._id} />
     </View>
   );
 }
@@ -73,7 +133,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: "Poppins",
     textAlign: "center",
-    marginTop: 7
+    marginTop: 7,
   },
   inviteBtnContainer: {
     backgroundColor: "#262626",

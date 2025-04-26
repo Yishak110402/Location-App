@@ -15,6 +15,7 @@ export function GroupProvider({ children }) {
   const [usernameQuery, setUsernamequery] = useState("");
   const [usernameSearchResults, setUsernameSearchResults] = useState([]);
   const [allInvitations, setAllInvitations] = useState([]);
+  const [groupMembersLocations, setGroupMembersLocations] = useState([]);
 
   const createGroup = async () => {
     if (newGroupName === "") {
@@ -215,7 +216,9 @@ export function GroupProvider({ children }) {
     getGroupDetails,
     allInvitations,
     rejectInvitation,
-    acceptInvitation
+    acceptInvitation,
+    groupMembersLocations,
+    setGroupMembersLocations,
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>

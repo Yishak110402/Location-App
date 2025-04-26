@@ -8,13 +8,13 @@ export const GeneralContext = createContext();
 
 export function GeneralProvider({ children }) {
   const localIp = "http://192.168.0.110:6969";
-  const socket = io.connect(localIp);
 
   const [currentUser, setCurrentUser] = useState({});
   const [allGroups, setAllGroups] = useState([]);
   const [loadingGroups, setLoadingGroups] = useState(false);
 
-  const [location, setlocation] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [openedGroup, setOpenedGroup] = useState({});
 
   const getCurrentLocation = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
@@ -23,26 +23,8 @@ export function GeneralProvider({ children }) {
       return;
     }
     const currentLocation = await Location.getCurrentPositionAsync({});
-    // console.log(currentLocation.coords);
-    setlocation({
-      latitude: currentLocation.coords.latitude,
-      longitude: currentLocation.coords.longitude
-    })
+    return currentLocation;
   };
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      await getCurrentLocation()
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(()=>{
-    if(location === null) return
-    socket.emit("sendLocation",{location})
-    socket.on("receivedLocation",(message)=>{console.log(message);
-    })
-  },[socket])
-
   // useEffect(() => {
   //   const removeSavedUser = async () => {
   //     await AsyncStorage.removeItem("current-user");
@@ -84,6 +66,9 @@ export function GeneralProvider({ children }) {
     loadingGroups,
     allGroups,
     setAllGroups,
+    getCurrentLocation,
+    location,
+    setLocation,
   };
   return (
     <GeneralContext.Provider value={value}>{children}</GeneralContext.Provider>
