@@ -1,7 +1,7 @@
 const isDefaultMongoId = require("../utils/checkMongoId");
 const Invitation = require("./../models/invitationsModel");
 const Group = require("./../models/groupModel");
-const User = require("./../models/userModel")
+const User = require("./../models/userModel");
 
 exports.sendInvitation = async (req, res) => {
   const { invitedUserId, invitedGroup, senderId } = req.body;
@@ -71,8 +71,7 @@ exports.acceptInvitation = async (req, res) => {
     });
   }
   const wantedInvitation = await Invitation.findById(invitationId);
-  console.log(wantedInvitation);
-  
+
   const wantedGroup = await Group.findById(wantedInvitation.invitedToGroup);
   wantedGroup.members.push(wantedInvitation.invitedUser);
   const edittedGroup = await Group.findByIdAndUpdate(
@@ -83,13 +82,12 @@ exports.acceptInvitation = async (req, res) => {
     { new: true }
   );
   const invitedUser = await User.findById(wantedInvitation.invitedUser);
-  console.log(invitedUser);
-  
+
   invitedUser.groups.push(wantedGroup._id);
   const updatedUser = await User.findByIdAndUpdate(invitedUser._id, {
     members: invitedUser.groups,
   });
-  const deletedInvitation = await Invitation.findByIdAndDelete(invitationId)
+  const deletedInvitation = await Invitation.findByIdAndDelete(invitationId);
   return res.json({
     status: "success",
     data: {

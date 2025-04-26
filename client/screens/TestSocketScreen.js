@@ -3,7 +3,7 @@ import { Alert, StyleSheet } from "react-native";
 import { Pressable, Text, TextInput, View } from "react-native";
 import { io } from "socket.io-client";
 
-const socket = io.connect("http://192.168.0.110:6969");
+// const socket = io.connect("http://192.168.0.110:6969");
 
 export default function TestSocketScreen() {
   const sendMessage = () => {

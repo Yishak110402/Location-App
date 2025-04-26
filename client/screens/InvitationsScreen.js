@@ -25,28 +25,29 @@ export default function InvitationsScreen() {
     <View style={styles.container}>
       <Text style={styles.header}>Invitations</Text>
       <View style={styles.invitationsContainer}>
-        {allInvitations.length === 0 && (
+        {/* {allInvitations.length === 0 && (
           <View>
             <Text>You have no invitations yet</Text>
           </View>
-        )}
-        {allInvitations.length !== 0 && (
-          <FlatList
-            renderItem={({ item }) => {
-              return <InvitationListItem invitation={item} />;
-            }}
-            keyExtractor={(item) => {
-              return item._id;
-            }}
-            data={allInvitations}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-              />
-            }
-          />
-        )}
+        )} */}
+
+        <FlatList
+          renderItem={({ item }) => {
+            return <InvitationListItem invitation={item} />;
+          }}
+          keyExtractor={(item) => {
+            return item._id;
+          }}
+          data={allInvitations}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>You have no invitations yet</Text>
+            </View>
+          }
+        />
       </View>
     </View>
   );
@@ -69,4 +70,14 @@ const styles = StyleSheet.create({
   invitationsContainer: {
     flex: 1,
   },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText:{
+    fontSize: 15,
+    marginTop: 50,
+    fontFamily:"Montserrat-Regular"
+  }
 });
