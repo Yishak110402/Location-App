@@ -6,7 +6,6 @@ import { AuthContext } from "../../context/authContext";
 export default function SelectOption({ option, index, setShowModal }) {
   const { signUpData, setSignUpData } = useContext(AuthContext);
   const handlePress = () => {
-    console.log("Pressed");
     setSignUpData((form) => ({ ...form, gender: option }));
     setShowModal(false)
   };

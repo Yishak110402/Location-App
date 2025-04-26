@@ -102,11 +102,8 @@ export default function OpenGroupScreen() {
       setAvailableMembersIds(ids);
       const locations = [];
       for (let i = 0; i < ids.length; i++) {
-        console.log(message.data[ids[i]]);
         locations.push(message.data[ids[i]]);
       }
-      console.log(locations);
-      console.log(locations.length);
       setGroupMembersLocations(locations);
     });
   }, [socket]);

@@ -53,7 +53,6 @@ export function GroupProvider({ children }) {
       return;
     }
     setNewGroupName("");
-    console.log(data.data);
     setShowCreateGroupModal(false);
     setAllGroups((groups) => [data.data.group, ...groups]);
   };
@@ -89,7 +88,6 @@ export function GroupProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
-    console.log(data);
   };
   const findByUsername = async () => {
     if (usernameQuery === "") {
@@ -106,7 +104,6 @@ export function GroupProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
-    console.log(data.data.result[0].username);
     setUsernameSearchResults(data.data.result);
   };
   const loadAllInvitations = async () => {
@@ -126,7 +123,6 @@ export function GroupProvider({ children }) {
     if (data.status === "fail") {
       Alert.alert("Error", data.message);
     }
-    console.log(data.data);
     setAllInvitations(data.data.invitations);
   };
   const getGroupDetails = async (groupId) => {
@@ -144,12 +140,9 @@ export function GroupProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
-    console.log(data.data.group);
     return data.data.group;
   };
   const rejectInvitation = async (id) => {
-    console.log(id);
-
     const res = await fetch(`${localIp}/invitation/${id}`, {
       method: "DELETE",
       headers: {

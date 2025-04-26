@@ -53,7 +53,6 @@ export function GeneralProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
-    console.log(data.data.groups);
     setAllGroups(data.data.groups);
     setLoadingGroups(false);
   };

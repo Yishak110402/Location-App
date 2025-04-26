@@ -136,7 +136,6 @@ export function AuthProvider({ children }) {
     if (data.status === "fail") {
       setError([...error, data.message]);
       setShowError(true);
-      console.log(data);
       return;
     }
     setCurrentUser(data.data.user);
