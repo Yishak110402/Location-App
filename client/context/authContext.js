@@ -143,6 +143,11 @@ export function AuthProvider({ children }) {
     navigation.navigate("Main");
   };
 
+  const logOut = async()=>{
+   await AsyncStorage.removeItem("current-user")
+   navigation.navigate("Sign Up")
+  }
+
   const value = {
     signUpData,
     setSignUpData,
@@ -153,6 +158,7 @@ export function AuthProvider({ children }) {
     logIn,
     setLoginData,
     logInData,
+    logOut
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
