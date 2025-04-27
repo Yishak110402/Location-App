@@ -147,3 +147,56 @@ exports.getGroupDetails = async(req, res)=>{
     }
   })
 }
+exports.kickUser = async(req, res)=>{
+  const {groupId} = req.params
+  const {userId} = req.body
+  if(!groupId || !userId){
+    return res.json({
+      status:"fail",
+      message:"Necessary Information is missing"
+    })
+  }
+  const checkUser = await User.findById(userId)
+  if(!checkUser){
+    return res.json({
+      status:"fail",
+      message:"No user exists with that ID"
+    })
+  }
+  const group = await Group.findById(groupId)
+  if(!group){
+    return res.json({
+      status:"fail",
+      message:"No group exists with that ID"
+    })
+  }
+  if(userId === group.owner){
+    return res.json({
+      status:"fail",
+      message:"You are the owner. You can't leave this group."
+    })
+  }
+  let edittedGroupMembers = group.members.filter((member)=>{
+    return member._id !== userId
+  })
+  if(group.members.length === edittedGroupMembers.length){
+    return res.json({
+      status:"fail",
+      message:"The user is not a part of this group"
+    })
+  }
+  const edittedGroup = await Group.findByIdAndUpdate({
+    members: edittedGroupMembers
+  })
+  const userGroups = checkUser.groups
+  const edittedUserGroups = userGroups.filter((groupID)=>{
+    return groupID !== groupId
+  })
+  const edittedUser = await User.findByIdAndUpdate(userId, {
+    groups: edittedUserGroups
+  })
+  return res.json({
+    status:"success",
+    message:"User kicked out successfully"
+  })
+}

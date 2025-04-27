@@ -16,11 +16,12 @@ import MapView, {
 } from "react-native-maps";
 import GroupMember from "../components/OpenGroupScreen/GroupMember";
 import SearchUserModal from "../components/OpenGroupScreen/SearchUserModal";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GroupContext } from "../context/groupContext";
 import { GeneralContext } from "../context/generalContext";
 import { socket } from "../utils/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GroupOptions from "../components/OpenGroupScreen/GroupOptions";
 
 export default function OpenGroupScreen() {
   const navigation = useNavigation();
@@ -30,9 +31,12 @@ export default function OpenGroupScreen() {
     setAvailableMembersIds,
     groupMembersLocations,
     setGroupMembersLocations,
+    checkGroup,
   } = useContext(GroupContext);
   const { getCurrentLocation, location, setLocation, currentUser } =
     useContext(GeneralContext);
+  const [showGroupOptions, setShowGroupOptions] = useState(false);
+  const mapRef = useRef();
 
   const route = useRoute();
   const currGroup = route.params.group;
@@ -95,8 +99,17 @@ export default function OpenGroupScreen() {
           id: currUser._id,
         },
       });
+      mapRef.current.animateCamera({
+        center: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+        zoom: 20
+      }, {duration: 1500});
     }
     currLocation();
+  }, []);
+  useEffect(() => {
     socket.on("updateLocations", (message) => {
       const ids = Object.keys(message.data);
       setAvailableMembersIds(ids);
@@ -111,6 +124,8 @@ export default function OpenGroupScreen() {
   useEffect(() => {
     const backPress = () => {
       socket.disconnect();
+      setGroupMembersLocations([]);
+      setAvailableMembersIds([])
       navigation.navigate("Main");
     };
     const backButton = BackHandler.addEventListener(
@@ -118,6 +133,9 @@ export default function OpenGroupScreen() {
       backPress
     );
     return () => backButton.remove();
+  }, []);
+  useEffect(() => {
+    checkGroup(currGroup._id);
   }, []);
 
   return (
@@ -127,6 +145,7 @@ export default function OpenGroupScreen() {
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           initialRegion={INITIAL_REGION}
+          ref={mapRef}
           // customMapStyle={darkMapStyle}
         >
           {groupMembersLocations.length !== 0 &&
@@ -134,27 +153,34 @@ export default function OpenGroupScreen() {
               <Marker
                 key={idx}
                 title={currentUser._id}
-                coordinate={location.location}
-              >
-                <Image source={require("./../assets/profile pic.jpg")}
-                style={{
-                  width: 35,
-                  height: 35,
-                  borderRadius: 999,
-                  backgroundColor:"green"
-                }}
+                coordinate={location.location}>
+                <Image
+                  source={require("./../assets/profile pic.jpg")}
+                  style={{
+                    width: 35,
+                    height: 35,
+                    borderRadius: 999,
+                    backgroundColor: "green",
+                  }}
                 />
               </Marker>
             ))}
         </MapView>
       </View>
       <View style={{ flex: 0.4 }}>
-        <Text style={styles.membersHeader}>Members</Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.membersHeader}>Members</Text>
+          <Pressable onPress={() => setShowGroupOptions(true)}>
+            <View style={styles.headerBtnContainer}>
+              <Text style={styles.headerBtnText}>Options</Text>
+            </View>
+          </Pressable>
+        </View>
         <FlatList
           horizontal
           data={currGroup.members}
           renderItem={({ item }) => {
-            return <GroupMember member={item} />;
+            return <GroupMember availableMembersIds={availableMembersIds} member={item} />;
           }}
           keyExtractor={(item) => {
             return item;
@@ -167,6 +193,11 @@ export default function OpenGroupScreen() {
         </Pressable>
       </View>
       <SearchUserModal currentGroupId={currGroup._id} />
+      <GroupOptions
+        showModal={showGroupOptions}
+        currentGroup={currGroup}
+        setShowModal={setShowGroupOptions}
+      />
     </View>
   );
 }
@@ -201,5 +232,23 @@ const styles = StyleSheet.create({
     color: "#f7f7f7",
     fontSize: 15,
     fontFamily: "Montserrat-Regular",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    paddingInline: 15,
+    alignItems: "center",
+  },
+  headerBtnContainer: {
+    marginLeft: 75,
+    borderWidth: 1,
+    backgroundColor: "#262626",
+    borderRadius: 8,
+    padding: 5,
+  },
+  headerBtnText: {
+    color: "#f7f7f7",
+    fontFamily: "Montserrat-Regular",
+    fontSize: 15,
   },
 });

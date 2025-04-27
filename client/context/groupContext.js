@@ -16,7 +16,7 @@ export function GroupProvider({ children }) {
   const [usernameSearchResults, setUsernameSearchResults] = useState([]);
   const [allInvitations, setAllInvitations] = useState([]);
   const [groupMembersLocations, setGroupMembersLocations] = useState([]);
-  const [availableMembersIds, setAvailableMembersIds] = useState([])
+  const [availableMembersIds, setAvailableMembersIds] = useState([]);
 
   const createGroup = async () => {
     if (newGroupName === "") {
@@ -182,6 +182,23 @@ export function GroupProvider({ children }) {
     }
     navigation.navigate("Groups");
   };
+  const checkGroup = async (id) => {
+    const res = await fetch(`${localIp}/group/detail/${id}`);
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to server");
+      navigation.navigate("Main");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", "Group has been deleted");
+      setAllGroups((prevGroups) =>
+        prevGroups.filter((group) => group._id !== id)
+      );
+      navigation.navigate("Main")
+      return;
+    }
+  };
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -214,7 +231,8 @@ export function GroupProvider({ children }) {
     groupMembersLocations,
     setGroupMembersLocations,
     availableMembersIds,
-    setAvailableMembersIds
+    setAvailableMembersIds,
+    checkGroup
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>
