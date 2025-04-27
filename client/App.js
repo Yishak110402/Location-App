@@ -26,11 +26,13 @@ export default function App() {
   const Tabs = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
 
-  useFonts({
+  const [loaded] = useFonts({
     Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
     "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
   });
-
+  if (!loaded) {
+    return null;
+  }
   const TabsNavFlow = () => {
     return (
       <Tabs.Navigator
@@ -44,7 +46,6 @@ export default function App() {
             fontSize: 13,
             fontFamily: "Montserrat-Regular",
           },
-          
         }}>
         <Tabs.Screen
           name="Groups"
@@ -79,8 +80,12 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={{flex: 1}}>
-        <StatusBar backgroundColor="transparent" style="dark" translucent={true} />
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar
+          backgroundColor="transparent"
+          style="dark"
+          translucent={true}
+        />
         <NavigationContainer>
           <GeneralProvider>
             <AuthProvider>

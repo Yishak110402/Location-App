@@ -52,6 +52,6 @@ app.all("/*", (req, res) => {
     message: `Can't ${req.method} to ${req.originalUrl}`,
   });
 });
-server.listen(6969, () => {
+server.listen(1212, () => {
   console.log("Listening on Port 6969");
 });
