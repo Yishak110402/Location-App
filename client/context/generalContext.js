@@ -7,7 +7,8 @@ import * as Location from "expo-location";
 export const GeneralContext = createContext();
 
 export function GeneralProvider({ children }) {
-  const localIp = "http://192.168.0.110:6969";
+  // const localIp = "http://192.168.0.110:6969";
+  const localIp = "https://locationapp.keabafrica.com"
 
   const [currentUser, setCurrentUser] = useState({});
   const [allGroups, setAllGroups] = useState([]);
