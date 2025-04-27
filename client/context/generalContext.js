@@ -8,7 +8,7 @@ export const GeneralContext = createContext();
 
 export function GeneralProvider({ children }) {
   // const localIp = "http://192.168.0.110:6969";
-  const localIp = "https://locationapp.keabafrica.com"
+  const localIp = "https://location-app-lu7v.onrender.com"
 
   const [currentUser, setCurrentUser] = useState({});
   const [allGroups, setAllGroups] = useState([]);
@@ -26,12 +26,12 @@ export function GeneralProvider({ children }) {
     const currentLocation = await Location.getCurrentPositionAsync({});
     return currentLocation;
   };
-  // useEffect(() => {
-  //   const removeSavedUser = async () => {
-  //     await AsyncStorage.removeItem("current-user");
-  //   };
-  //   removeSavedUser()
-  // }, []);
+  useEffect(() => {
+    const removeSavedUser = async () => {
+      await AsyncStorage.removeItem("current-user");
+    };
+    removeSavedUser()
+  }, []);
 
   const fetchUserGroups = async () => {
     setLoadingGroups(true);
