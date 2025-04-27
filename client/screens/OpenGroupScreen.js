@@ -4,6 +4,7 @@ import {
   BackHandler,
   FlatList,
   Image,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -143,7 +144,7 @@ export default function OpenGroupScreen() {
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
-          provider={PROVIDER_GOOGLE}
+          provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
           initialRegion={INITIAL_REGION}
           ref={mapRef}
           // customMapStyle={darkMapStyle}
