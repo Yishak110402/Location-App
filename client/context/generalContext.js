@@ -26,12 +26,12 @@ export function GeneralProvider({ children }) {
     const currentLocation = await Location.getCurrentPositionAsync({});
     return currentLocation;
   };
-  useEffect(() => {
-    const removeSavedUser = async () => {
-      await AsyncStorage.removeItem("current-user");
-    };
-    removeSavedUser()
-  }, []);
+  // useEffect(() => {
+  //   const removeSavedUser = async () => {
+  //     await AsyncStorage.removeItem("current-user");
+  //   };
+  //   removeSavedUser()
+  // }, []);
 
   const fetchUserGroups = async () => {
     setLoadingGroups(true);
