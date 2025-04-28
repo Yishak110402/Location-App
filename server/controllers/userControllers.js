@@ -263,7 +263,7 @@ exports.verifyUser = async(req, res)=>{
   }
   const sentPassword = user.password
   const actualPassword = checkUser.password
-  const isCorrect = await bcrypt.compare(sentPassword, actualPassword)
+  const isCorrect = sentPassword === actualPassword
   if(!isCorrect){
     return res.json({
       status:"fail",

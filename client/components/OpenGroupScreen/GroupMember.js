@@ -1,9 +1,16 @@
 import { useContext, useEffect, useState } from "react";
-import { View, Text, Alert, StyleSheet, Image } from "react-native";
+import { View, Text, Alert, StyleSheet, Image, Pressable } from "react-native";
 import { GeneralContext } from "../../context/generalContext";
+import { Ionicons } from "@expo/vector-icons";
+import { GroupContext } from "../../context/groupContext";
 
-export default function GroupMember({ member, availableMembersIds }) {
-  const { localIp } = useContext(GeneralContext);
+export default function GroupMember({
+  member,
+  availableMembersIds,
+  currGroup,
+}) {
+  const { localIp, currentUser } = useContext(GeneralContext);
+  const { kickMemberFromGroup } = useContext(GroupContext);
   const [memberData, setMemberData] = useState({ name: "Loading..." });
   useEffect(() => {
     const fetchUser = async () => {
@@ -30,7 +37,20 @@ export default function GroupMember({ member, availableMembersIds }) {
       <Text style={styles.textStyle}>
         {memberData.name ? memberData.name : ""}
       </Text>
-      <View style={[styles.indicator,availableMembersIds.includes(memberData._id)?{backgroundColor:"green"} : {backgroundColor:"red"}]}></View>
+      <View
+        style={[
+          styles.indicator,
+          availableMembersIds.includes(memberData._id)
+            ? { backgroundColor: "green" }
+            : { backgroundColor: "red" },
+        ]}></View>
+      {currentUser._id === currGroup.owner && (
+        <View>
+          <Pressable onPress={() => kickMemberFromGroup(currGroup)}>
+            <Ionicons color={"red"} name="trash" size={25} />
+          </Pressable>
+        </View>
+      )}
     </View>
   );
 }
@@ -45,25 +65,25 @@ const styles = StyleSheet.create({
     paddingInline: 25,
     textAlign: "center",
     alignItems: "center",
-    paddingBlock: 15,
+    paddingBlock: 20,
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 30,
+    height: 30,
     objectFit: "contain",
     borderRadius: 999,
     textAlign: "center",
   },
   textStyle: {
     fontFamily: "Montserrat-Regular",
-    fontSize: 18,
+    fontSize: 15,
     textAlign: "center",
     marginTop: 15,
   },
-  indicator:{
+  indicator: {
     width: 10,
     height: 10,
     borderRadius: 999,
     // backgroundColor:'green'
-  }
+  },
 });

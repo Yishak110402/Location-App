@@ -43,7 +43,28 @@ export function AuthProvider({ children }) {
       navigation.navigate("Sign Up");
       return;
     }
-    setCurrentUser(JSON.parse(loggedInUser))
+    const userData = JSON.parse(loggedInUser)
+    const res = await fetch(`${localIp}/user/verify`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user: userData
+      }),
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server.");
+      return;
+    }
+    const data = await res.json();
+    console.log(data);
+    
+    if (data.status === "fail") {
+      navigation.navigate("Sign Up");
+      return;
+    }
+    setCurrentUser(JSON.parse(loggedInUser));
     navigation.navigate("Main");
   };
 
@@ -51,6 +72,8 @@ export function AuthProvider({ children }) {
     Keyboard.dismiss();
     setError([]);
     setShowError(false);
+    console.log("Signing Up...");
+
     if (Object.values(signUpData).includes("")) {
       if (signUpData.name === "") {
         setError((errs) => [...errs, "You must enter a name"]);
@@ -98,6 +121,8 @@ export function AuthProvider({ children }) {
       Alert.alert("Error", data.message);
       return;
     }
+    console.log(data);
+
     const user = data.data.user;
     setCurrentUser(data.data.user);
     await AsyncStorage.setItem("current-user", JSON.stringify(user));
@@ -143,10 +168,10 @@ export function AuthProvider({ children }) {
     navigation.navigate("Main");
   };
 
-  const logOut = async()=>{
-   await AsyncStorage.removeItem("current-user")
-   navigation.navigate("Sign Up")
-  }
+  const logOut = async () => {
+    await AsyncStorage.removeItem("current-user");
+    navigation.navigate("Sign Up");
+  };
 
   const value = {
     signUpData,
@@ -158,7 +183,7 @@ export function AuthProvider({ children }) {
     logIn,
     setLoginData,
     logInData,
-    logOut
+    logOut,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

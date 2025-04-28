@@ -8,7 +8,7 @@ export const GroupContext = createContext();
 
 export function GroupProvider({ children }) {
   const navigation = useNavigation();
-  const { localIp, setAllGroups } = useContext(GeneralContext);
+  const { localIp, setAllGroups, currentUser } = useContext(GeneralContext);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const [showUsernameSearchModal, setShowUsernameSearchModal] = useState(false);
@@ -199,6 +199,13 @@ export function GroupProvider({ children }) {
       return;
     }
   };
+  const kickMemberFromGroup = async(group)=>{
+    if(group.owner !== currentUser._id){
+      Alert.alert("Error", "You cannot kick members out of a group because you are not the owner")
+      return
+    }
+    Alert.alert("Success","You can delete this group")
+  } 
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -232,7 +239,8 @@ export function GroupProvider({ children }) {
     setGroupMembersLocations,
     availableMembersIds,
     setAvailableMembersIds,
-    checkGroup
+    checkGroup,
+    kickMemberFromGroup
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>

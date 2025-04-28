@@ -23,6 +23,7 @@ import { GeneralContext } from "../context/generalContext";
 import { socket } from "../utils/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GroupOptions from "../components/OpenGroupScreen/GroupOptions";
+import BackButton from "../components/OpenGroupScreen/BackButton";
 
 export default function OpenGroupScreen() {
   const navigation = useNavigation();
@@ -141,7 +142,9 @@ export default function OpenGroupScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      
       <View style={styles.mapContainer}>
+      
         <MapView
           style={styles.map}
           provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
@@ -167,6 +170,7 @@ export default function OpenGroupScreen() {
               </Marker>
             ))}
         </MapView>
+        <BackButton />
       </View>
       <View style={{ flex: 0.4 }}>
         <View style={styles.headerContainer}>
@@ -181,7 +185,7 @@ export default function OpenGroupScreen() {
           horizontal
           data={currGroup.members}
           renderItem={({ item }) => {
-            return <GroupMember availableMembersIds={availableMembersIds} member={item} />;
+            return <GroupMember currGroup={currGroup} availableMembersIds={availableMembersIds} member={item} />;
           }}
           keyExtractor={(item) => {
             return item;
@@ -193,12 +197,14 @@ export default function OpenGroupScreen() {
           </View>
         </Pressable>
       </View>
+    
       <SearchUserModal currentGroupId={currGroup._id} />
       <GroupOptions
         showModal={showGroupOptions}
         currentGroup={currGroup}
         setShowModal={setShowGroupOptions}
       />
+      
     </View>
   );
 }
@@ -210,6 +216,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   mapContainer: {
+    position: 'relative',
     flex: 1,
   },
   membersHeader: {
