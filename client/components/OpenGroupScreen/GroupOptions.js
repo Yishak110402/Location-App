@@ -1,5 +1,7 @@
 import { Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import GroupOptionsButton from "./GroupOptionsButton";
+import { useContext } from "react";
+import { GeneralContext } from "../../context/generalContext";
 
 export default function GroupOptions({
   showModal,
@@ -7,9 +9,10 @@ export default function GroupOptions({
   setShowModal,
   setShowRenameGroupModal,
 }) {
+  const { currentUser } = useContext(GeneralContext);
   const handleRenameGroupModal = () => {
-    setShowModal(false)
-    setShowRenameGroupModal(true)
+    setShowModal(false);
+    setShowRenameGroupModal(true);
   };
   return (
     <Modal
@@ -20,9 +23,16 @@ export default function GroupOptions({
         onPress={() => setShowModal(false)}
         style={styles.outerContainer}>
         <View style={styles.innerContainer}>
-          <GroupOptionsButton text="Delete Group" />
+          {currentUser._id === currentGroup.owner && (
+            <>
+              <GroupOptionsButton text="Delete Group" />
+              <GroupOptionsButton
+                text="Rename Group"
+                pressFunction={handleRenameGroupModal}
+              />
+            </>
+          )}
           <GroupOptionsButton text="Leave Group" />
-          <GroupOptionsButton text="Rename Group" pressFunction={handleRenameGroupModal} />
         </View>
       </Pressable>
     </Modal>
