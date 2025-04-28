@@ -53,5 +53,5 @@ app.all("/*", (req, res) => {
   });
 });
 server.listen(1212, () => {
-  console.log("Listening on Port 6969");
+  console.log("Listening on Port 1212");
 });

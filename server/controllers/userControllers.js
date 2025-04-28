@@ -3,7 +3,6 @@ const validate = require("validator");
 const bcrypt = require("bcryptjs");
 const isDefaultMongoId = require("./../utils/checkMongoId");
 const isValidUsername = require("../utils/validateUsername");
-const { options } = require("../routes/userRoute");
 
 exports.createUser = async (req, res) => {
   if (!req.body) {
@@ -226,6 +225,7 @@ exports.fetchUser = async (req, res) => {
     },
   });
 };
+
 exports.findUserByUsername = async (req, res) => {
   const {username} = req.params;
   if (!username) {
@@ -245,3 +245,33 @@ exports.findUserByUsername = async (req, res) => {
     },
   });
 };
+
+exports.verifyUser = async(req, res)=>{
+  const {user} = req.body
+  if(!user){
+    return res.json({
+      status:"fail",
+      message:"You need to provide the user details"
+    })
+  }
+  const checkUser = await User.findOne({email: user.email})
+  if(!checkUser){
+    return res.json({
+      status:"fail",
+      message:"Email changed"
+    })
+  }
+  const sentPassword = user.password
+  const actualPassword = checkUser.password
+  const isCorrect = await bcrypt.compare(sentPassword, actualPassword)
+  if(!isCorrect){
+    return res.json({
+      status:"fail",
+      message:"Password has been changed"
+    })
+  }
+  return res.json({
+    status:"success",
+    message:"User verified"
+  })
+}
