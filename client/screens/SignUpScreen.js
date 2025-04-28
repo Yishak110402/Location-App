@@ -107,7 +107,7 @@ export default function SignUpScreen() {
       </View>
       <Modal visible={showModal} animationType="fade" transparent>
         {/* <Pressable onPress={()=>(setShowModal(false))}> */}
-        <View style={styles.modalContainer}>
+        <Pressable onPress={()=>(setShowModal(false))} style={styles.modalContainer}>
           <View style={styles.modal}>
             <Text style={styles.modalHeader}>Select Gender</Text>
             <View>
@@ -120,7 +120,7 @@ export default function SignUpScreen() {
               ))}
             </View>
           </View>
-        </View>
+        </Pressable>
         {/* </Pressable> */}
       </Modal>
     </KeyboardAvoidingView>

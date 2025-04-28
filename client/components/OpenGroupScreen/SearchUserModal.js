@@ -1,4 +1,4 @@
-import { FlatList, ScrollView, StyleSheet } from "react-native";
+import { FlatList, Pressable, ScrollView, StyleSheet } from "react-native";
 import { Modal, Text, TextInput, View } from "react-native";
 import UsernameSearchResult from "./UsernameSearchResult";
 import { useContext } from "react";
@@ -17,7 +17,7 @@ export default function SearchUserModal({currentGroupId}) {
       transparent
       visible={showUsernameSearchModal}
       onRequestClose={() => setShowUsernameSearchModal(false)}>
-      <View style={styles.outerContainer}>
+      <Pressable onPress={()=>(setShowUsernameSearchModal(false))} style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <View>
             <Text style={styles.label}>Username</Text>
@@ -40,7 +40,7 @@ export default function SearchUserModal({currentGroupId}) {
             )}
           </View>
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 }

@@ -92,7 +92,7 @@ export default function App() {
               <GroupProvider>
                 <Stack.Navigator
                   initialRouteName="Initial Loading"
-                  screenOptions={{ headerShown: false, animation: "fade" }}>
+                  screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
                   <Stack.Screen
                     name="Initial Loading"
                     component={InitialLoadingScreen}
