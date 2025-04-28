@@ -2,7 +2,7 @@ import { Pressable, View, Text, StyleSheet } from "react-native";
 
 export default function GroupOptionsButton({text = "button", pressFunction}){
     return(
-        <Pressable>
+        <Pressable onPress={pressFunction}>
             <View style={styles.container}>
                 <Text style={styles.btnText}>{text}</Text>
             </View>

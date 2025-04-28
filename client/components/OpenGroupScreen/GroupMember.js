@@ -46,7 +46,7 @@ export default function GroupMember({
         ]}></View>
       {currentUser._id === currGroup.owner && (
         <View>
-          <Pressable onPress={() => kickMemberFromGroup(currGroup)}>
+          <Pressable onPress={() => kickMemberFromGroup(currGroup, memberData._id)}>
             <Ionicons color={"red"} name="trash" size={25} />
           </Pressable>
         </View>

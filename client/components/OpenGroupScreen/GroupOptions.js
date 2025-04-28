@@ -5,19 +5,26 @@ export default function GroupOptions({
   showModal,
   currentGroup,
   setShowModal,
+  setShowRenameGroupModal,
 }) {
+  const handleRenameGroupModal = () => {
+    setShowModal(false)
+    setShowRenameGroupModal(true)
+  };
   return (
     <Modal
       visible={showModal}
       onRequestClose={() => setShowModal(false)}
       transparent>
-      <View style={styles.outerContainer}>
+      <Pressable
+        onPress={() => setShowModal(false)}
+        style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <GroupOptionsButton text="Delete Group" />
           <GroupOptionsButton text="Leave Group" />
-          <GroupOptionsButton text="Rename Group" />          
+          <GroupOptionsButton text="Rename Group" pressFunction={handleRenameGroupModal} />
         </View>
-      </View>
+      </Pressable>
     </Modal>
   );
 }
@@ -33,6 +40,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7f7f7",
     width: "70%",
     paddingBlock: 25,
-    borderRadius: 6
+    borderRadius: 6,
   },
 });

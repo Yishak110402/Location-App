@@ -199,12 +199,15 @@ export function GroupProvider({ children }) {
       return;
     }
   };
-  const kickMemberFromGroup = async(group)=>{
+  const kickMemberFromGroup = async(group, userId)=>{
     if(group.owner !== currentUser._id){
       Alert.alert("Error", "You cannot kick members out of a group because you are not the owner")
       return
     }
-    Alert.alert("Success","You can delete this group")
+    if(currentUser._id === userId){
+      Alert.alert("Error", "You cannot kick yourself out of a group")
+      return
+    }
   } 
 
   useEffect(() => {

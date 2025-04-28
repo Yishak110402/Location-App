@@ -24,6 +24,7 @@ import { socket } from "../utils/socket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GroupOptions from "../components/OpenGroupScreen/GroupOptions";
 import BackButton from "../components/OpenGroupScreen/BackButton";
+import RenameGroupModal from "../components/OpenGroupScreen/RenameGroupModal";
 
 export default function OpenGroupScreen() {
   const navigation = useNavigation();
@@ -38,6 +39,7 @@ export default function OpenGroupScreen() {
   const { getCurrentLocation, location, setLocation, currentUser } =
     useContext(GeneralContext);
   const [showGroupOptions, setShowGroupOptions] = useState(false);
+  const [showRenameGroupModal, setShowRenameGroupModal] = useState(false)
   const mapRef = useRef();
 
   const route = useRoute();
@@ -203,7 +205,9 @@ export default function OpenGroupScreen() {
         showModal={showGroupOptions}
         currentGroup={currGroup}
         setShowModal={setShowGroupOptions}
+        setShowRenameGroupModal = {setShowRenameGroupModal}
       />
+      <RenameGroupModal showModal={showRenameGroupModal} setShowModal={setShowRenameGroupModal} setOptionsModal = {setShowGroupOptions} />
       
     </View>
   );
