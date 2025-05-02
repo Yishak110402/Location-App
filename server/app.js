@@ -7,6 +7,7 @@ const userRouter = require("./routes/userRoute");
 const groupRouter = require("./routes/groupRoutes");
 const invitationRouter = require("./routes/invitationRoutes");
 const { setupSocket } = require("./socket");
+
 const app = express();
 
 const server = http.createServer(app);

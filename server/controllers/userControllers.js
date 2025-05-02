@@ -227,7 +227,7 @@ exports.fetchUser = async (req, res) => {
 };
 
 exports.findUserByUsername = async (req, res) => {
-  const {username} = req.params;
+  const { username } = req.params;
   if (!username) {
     return res.json({
       status: "fail",
@@ -246,32 +246,159 @@ exports.findUserByUsername = async (req, res) => {
   });
 };
 
-exports.verifyUser = async(req, res)=>{
-  const {user} = req.body
-  if(!user){
+exports.verifyUser = async (req, res) => {
+  const { user } = req.body;
+  if (!user) {
     return res.json({
-      status:"fail",
-      message:"You need to provide the user details"
-    })
+      status: "fail",
+      message: "You need to provide the user details",
+    });
   }
-  const checkUser = await User.findOne({email: user.email})
-  if(!checkUser){
+  const checkUser = await User.findOne({ email: user.email });
+  if (!checkUser) {
     return res.json({
-      status:"fail",
-      message:"Email changed"
-    })
+      status: "fail",
+      message: "Email changed",
+    });
   }
-  const sentPassword = user.password
-  const actualPassword = checkUser.password
-  const isCorrect = sentPassword === actualPassword
-  if(!isCorrect){
+  const sentPassword = user.password;
+  const actualPassword = checkUser.password;
+  const isCorrect = sentPassword === actualPassword;
+  if (!isCorrect) {
     return res.json({
-      status:"fail",
-      message:"Password has been changed"
-    })
+      status: "fail",
+      message: "Password has been changed",
+    });
   }
   return res.json({
-    status:"success",
-    message:"User verified"
-  })
-}
+    status: "success",
+    message: "User verified",
+  });
+};
+
+exports.editName = async () => {
+  const { name } = req.body;
+  const { id } = req.params;
+  if (!id) {
+    return res.json({
+      status: "fail",
+      message: "You need to provide a user's ID",
+    });
+  }
+  const isValidID = isDefaultMongoId(id);
+  if (!isValidID) {
+    return res.json({
+      status: "fail",
+      message: "Invalid User ID",
+    });
+  }
+  if (!name) {
+    return res.json({
+      status: "fail",
+      message: "You need to provide a name",
+    });
+  }
+  if (name.length < 2) {
+    return res.json({
+      status: "fail",
+      message: "Name should be more than 2 characters",
+    });
+  }
+  const checkUser = await User.findById(id);
+  if (!checkUser) {
+    return res.json({
+      status: "fail",
+      message: "User doesn't exist",
+    });
+  }
+  const edittedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      name,
+    },
+    { new: true }
+  );
+  if (!edittedUser) {
+    return res.json({
+      status: "fail",
+      message: "Failed to update user details",
+    });
+  }
+  return res.json({
+    status: "success",
+    data: {
+      user: edittedUser,
+    },
+  });
+};
+
+exports.editEmail = async (req, res) => {
+  const { id } = req.params;
+  const { oldEmail, newEmail } = req.body;
+  const validEmail = validate.isEmail(newEmail);
+  if (!validEmail) {
+    return res.json({
+      status: "fail",
+      message: "The new email you provided isn't a valid email.",
+    });
+  }
+  const checkEmail = await User.findOne({
+    email: oldEmail,
+    _id: id,
+  });
+  if (!checkEmail) {
+    return res.json({
+      status: "fail",
+      message: "No user is found with that email address",
+    });
+  }
+  const edittedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      email: newEmail,
+    },
+    { new: true }
+  );
+  if (!edittedUser) {
+    return res.json({
+      status: "fail",
+      message: "Failed to update user details",
+    });
+  }
+  return res.json({
+    status: "success",
+    data: {
+      user: edittedUser,
+    },
+  });
+};
+
+exports.editPassword = async (req, res) => {
+  const { id } = req.params;
+  const { oldPassword, newPassword } = req.body;
+  const areTheSame = await bcrypt.compare(newPassword, oldPassword);
+  if (areTheSame) {
+    return res.json({
+      status: "fail",
+      message: "Old Password and New Password cannot be the same.",
+    });
+  }
+  if (newPassword.length < 8) {
+    return res.json({
+      status: "fail",
+      message: "New Password length must be more than 8 characters",
+    });
+  }
+  const hashedPassword = await bcrypt.hash(newPassword, 8);
+  const edittedUser = await User.findByIdAndUpdate(
+    id,
+    {
+      password: hashedPassword,
+    },
+    { new: true }
+  );
+  return res.json({
+    status: "success",
+    data: { user: edittedUser },
+  });
+};
