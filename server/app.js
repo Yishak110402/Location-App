@@ -22,6 +22,7 @@ setupSocket(io);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static("public"))
 app.use("/user", userRouter);
 app.use("/group", groupRouter);
 app.use("/invitation", invitationRouter);

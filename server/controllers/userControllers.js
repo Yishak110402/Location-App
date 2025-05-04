@@ -272,6 +272,7 @@ exports.verifyUser = async (req, res) => {
   return res.json({
     status: "success",
     message: "User verified",
+    user: checkUser
   });
 };
 
@@ -376,7 +377,6 @@ exports.editEmail = async (req, res) => {
 
 exports.editPassword = async (req, res) => {
   console.log(req.params);
-
   const { id } = req.params;
   const { oldPassword, newPassword } = req.body;
   const checkUserPassword = await User.findOne({
@@ -424,7 +424,23 @@ exports.editPassword = async (req, res) => {
     data: { user: edittedUser },
   });
 };
-
+exports.editProfilePicture = async (req, res) => {
+  const file = req.file;
+  const { id } = req.params;
+  const updatedUser = await User.findByIdAndUpdate(id, {
+    profilePicture: file.filename,
+  },{new: true});
+  if (!updatedUser) {
+    return res.json({
+      status: "fail",
+      message: "Unable to change profile picture",
+    });
+  }
+  return res.json({
+    status: "success",
+    data: { user: updatedUser },
+  });
+};
 exports.sendVerificationCode = async (req, res) => {
   const { email } = req.body;
   if (!email) {

@@ -3,6 +3,7 @@ import { GeneralContext } from "./generalContext";
 import { Alert, Keyboard } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import * as DocumentPicker from "expo-document-picker";
 
 export const AuthContext = createContext();
 
@@ -28,7 +29,20 @@ export function AuthProvider({ children }) {
     newPassword: "",
     confirmPassword: "",
   });
+  const [imageURL, setImageURL] = useState(
+    currentUser.profilePicture
+      ? `${localIp}/ProfilePics/${currentUser.profilePicture}`
+      : `${localIp}/ProfilePics/profile.jpg`
+  );
   const navigation = useNavigation();
+  useEffect(() => {
+    if (currentUser) {
+      const url = currentUser.profilePicture
+        ? `${localIp}/ProfilePics/${currentUser.profilePicture}`
+        : `${localIp}/ProfilePics/profile.jpg`;
+      setImageURL(url);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (!showError) {
@@ -68,9 +82,12 @@ export function AuthProvider({ children }) {
 
     if (data.status === "fail") {
       navigation.navigate("Sign Up");
+      setCurrentUser({});
+      await AsyncStorage.removeItem("current-user");
       return;
     }
-    setCurrentUser(JSON.parse(loggedInUser));
+    setCurrentUser(data.user);
+    setImageURL(data.user.profilePicture);
     navigation.navigate("Main");
   };
 
@@ -206,39 +223,85 @@ export function AuthProvider({ children }) {
   };
   const changePassword = async () => {
     const { oldPassword, newPassword, confirmPassword } = passwords;
-    
-    if(Object.values(passwords).includes("")){
-      Alert.alert("Error","Fill all the required fields")
-      return
+
+    if (Object.values(passwords).includes("")) {
+      Alert.alert("Error", "Fill all the required fields");
+      return;
     }
-    if(newPassword !== confirmPassword){
-      Alert.alert("Error","The new password and confirm password fields must be the same") 
-      return
+    if (newPassword !== confirmPassword) {
+      Alert.alert(
+        "Error",
+        "The new password and confirm password fields must be the same"
+      );
+      return;
     }
-    const res = await fetch(`${localIp}/user/edit/password/${currentUser._id}`,{
-      method:"PATCH",
-      headers:{
-        'Content-Type':"application/json"
-      },
-      body: JSON.stringify({
-        oldPassword,
-        newPassword
-      })
-    })
-    if(!res.ok){
-      Alert.alert("Error","Unable to connect to the server") 
-      return
+    const res = await fetch(
+      `${localIp}/user/edit/password/${currentUser._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      }
+    );
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
     }
-    const data = await res.json()
+    const data = await res.json();
     console.log(data);
-    
-    if(data.status === "fail"){
-      Alert.alert("Error", data.message)
-      return
+
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
     }
-    setCurrentUser(data.data.user)
-    await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user))
-    Alert.alert("Success","Password changed successfully 🎉")
+    setCurrentUser(data.data.user);
+    await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user));
+    Alert.alert("Success", "Password changed successfully 🎉");
+  };
+  const changeProfilePicture = async () => {
+    const file = await DocumentPicker.getDocumentAsync({
+      multiple: false,
+      type: "image/*",
+    });
+    if (!file.assets) {
+      console.log("No file selected");
+      return;
+    }
+    console.log(file.assets[0]);
+    const formData = new FormData();
+    formData.append("profilePicture", {
+      name: file.assets[0].name,
+      type: file.assets[0].mimeType,
+      uri: file.assets[0].uri,
+    });
+    const res = await fetch(
+      `${localIp}/user/edit/profilepicture/${currentUser._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        body: formData,
+      }
+    );
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to server");
+      return;
+    }
+    const data = await res.json();
+    console.log(data);
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    setCurrentUser(data.data.user);
+    await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user));
+    Alert.alert("Success", "Profile picture changed successfully");
   };
   const value = {
     signUpData,
@@ -256,7 +319,9 @@ export function AuthProvider({ children }) {
     changeName,
     passwords,
     setPasswords,
-    changePassword
+    changePassword,
+    changeProfilePicture,
+    imageURL,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

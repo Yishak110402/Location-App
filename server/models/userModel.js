@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
   ghostMode: Boolean,
   profilePicture: {
     type: String,
+    default: null
   },
   gender:{
     type: String,
