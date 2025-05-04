@@ -13,7 +13,7 @@ export default function SettingsOptionsContainer() {
   const {currentUser} = useContext(GeneralContext)
   const [showNameChangeModal, setShowChangeNameModal] = useState(false)
   const [showChangeEmailModal, setShowChangeEmailModal] = useState(false)
-  const [showChangePasswordModal, setShowChangePasswordModal] = useState(true)
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false)
   const openNameChangeModal = ()=>{
     setShowChangeNameModal(true)
   }

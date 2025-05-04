@@ -22,6 +22,12 @@ export function AuthProvider({ children }) {
   });
   const [error, setError] = useState([]);
   const [showError, setShowError] = useState(true);
+  const [newName, setNewName] = useState("");
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -43,14 +49,14 @@ export function AuthProvider({ children }) {
       navigation.navigate("Sign Up");
       return;
     }
-    const userData = JSON.parse(loggedInUser)
+    const userData = JSON.parse(loggedInUser);
     const res = await fetch(`${localIp}/user/verify`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: userData
+        user: userData,
       }),
     });
     if (!res.ok) {
@@ -59,7 +65,7 @@ export function AuthProvider({ children }) {
     }
     const data = await res.json();
     console.log(data);
-    
+
     if (data.status === "fail") {
       navigation.navigate("Sign Up");
       return;
@@ -172,7 +178,68 @@ export function AuthProvider({ children }) {
     await AsyncStorage.removeItem("current-user");
     navigation.navigate("Sign Up");
   };
-
+  const changeName = async () => {
+    if (newName === "") {
+      return;
+    }
+    console.log("Changing Name");
+    const userId = currentUser._id;
+    const res = await fetch(`${localIp}/user/edit/name/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: newName }),
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    console.log(data.data.user);
+    setCurrentUser(data.data.user);
+    await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user));
+  };
+  const changePassword = async () => {
+    const { oldPassword, newPassword, confirmPassword } = passwords;
+    
+    if(Object.values(passwords).includes("")){
+      Alert.alert("Error","Fill all the required fields")
+      return
+    }
+    if(newPassword !== confirmPassword){
+      Alert.alert("Error","The new password and confirm password fields must be the same") 
+      return
+    }
+    const res = await fetch(`${localIp}/user/edit/password/${currentUser._id}`,{
+      method:"PATCH",
+      headers:{
+        'Content-Type':"application/json"
+      },
+      body: JSON.stringify({
+        oldPassword,
+        newPassword
+      })
+    })
+    if(!res.ok){
+      Alert.alert("Error","Unable to connect to the server") 
+      return
+    }
+    const data = await res.json()
+    console.log(data);
+    
+    if(data.status === "fail"){
+      Alert.alert("Error", data.message)
+      return
+    }
+    setCurrentUser(data.data.user)
+    await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user))
+    Alert.alert("Success","Password changed successfully 🎉")
+  };
   const value = {
     signUpData,
     setSignUpData,
@@ -184,6 +251,12 @@ export function AuthProvider({ children }) {
     setLoginData,
     logInData,
     logOut,
+    newName,
+    setNewName,
+    changeName,
+    passwords,
+    setPasswords,
+    changePassword
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

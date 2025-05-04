@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Modal,
   Pressable,
@@ -6,11 +7,15 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { AuthContext } from "../../context/authContext";
+import { GeneralContext } from "../../context/generalContext";
 
 export default function ChangeNameModal({
   showNameChangeModal,
   setShowChangeNameModal,
 }) {
+  const {changeName, newName, setNewName} = useContext(AuthContext)
+  const {currentUser, setCurrentUser} = useContext(GeneralContext)
   const closeModal = () => {
     setShowChangeNameModal(false);
   };
@@ -22,11 +27,11 @@ export default function ChangeNameModal({
       <Pressable onPress={closeModal} style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <Text style={styles.label}>Enter New Name</Text>
-          <TextInput style={styles.textInput} />
-          <Pressable>
-            <View style={styles.btnContainer}>
+          <TextInput style={styles.textInput} value={newName} onChangeText={(text)=>(setNewName(text))} placeholder={currentUser.name} />
+          <Pressable style={styles.btnContainer} android_ripple={{color:"white"}} onPress={changeName}>
+            {/* <View style={styles.btnContainer}> */}
               <Text style={styles.btnText}>Change Name</Text>
-            </View>
+            {/* </View> */}
           </Pressable>
         </View>
       </Pressable>

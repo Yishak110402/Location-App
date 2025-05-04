@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   Modal,
   Pressable,
@@ -6,12 +7,14 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { AuthContext } from "../../context/authContext";
 
 export default function ChangePasswordModal({
   showChangePasswordModal,
   setShowChangePasswordModal,
-  value = ""
+  value = "",
 }) {
+  const { passwords, setPasswords, changePassword } = useContext(AuthContext);
   const closeModal = () => {
     setShowChangePasswordModal(false);
   };
@@ -23,12 +26,35 @@ export default function ChangePasswordModal({
       <Pressable onPress={closeModal} style={styles.outerContainer}>
         <View style={styles.innerContainer}>
           <Text style={styles.label}>Enter Old Password</Text>
-          <TextInput value={value} style={styles.textInput} />
+          <TextInput
+            value={passwords.oldPassword}
+            style={styles.textInput}
+            onChangeText={(text) =>
+              setPasswords((pass) => ({ ...pass, oldPassword: text }))
+            }
+            autoCapitalize="none"
+          />
           <Text style={styles.label}>Enter New Password</Text>
-          <TextInput style={styles.textInput}/>
+          <TextInput
+            value={passwords.newPassword}
+            style={styles.textInput}
+            onChangeText={(text) =>
+              setPasswords((pass) => ({ ...pass, newPassword: text }))
+            }
+            autoCapitalize="none"
+          />
           <Text style={styles.label}>Confirm New Password</Text>
-          <TextInput style={styles.textInput}/>
-          <Pressable>
+          <TextInput
+            value={passwords.confirmPassword}
+            style={styles.textInput}
+            onChangeText={(text) =>
+              setPasswords((pass) => ({ ...pass, confirmPassword: text }))
+            }
+            autoCapitalize="none"
+          />
+          <Pressable
+            android_ripple={{ color: "white" }}
+            onPress={changePassword}>
             <View style={styles.btnContainer}>
               <Text style={styles.btnText}>Change Password</Text>
             </View>

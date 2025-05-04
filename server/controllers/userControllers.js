@@ -3,6 +3,7 @@ const validate = require("validator");
 const bcrypt = require("bcryptjs");
 const isDefaultMongoId = require("./../utils/checkMongoId");
 const isValidUsername = require("../utils/validateUsername");
+const sendVerificationEmail = require("../utils/sendVerificationEmail");
 
 exports.createUser = async (req, res) => {
   if (!req.body) {
@@ -72,8 +73,6 @@ exports.createUser = async (req, res) => {
       message: "Username is already taken.",
     });
   }
-  console.log(gender.toLowerCase());
-
   if (gender.toLowerCase() !== "male" && gender.toLowerCase() !== "female") {
     return res.json({
       status: "fail",
@@ -276,9 +275,17 @@ exports.verifyUser = async (req, res) => {
   });
 };
 
-exports.editName = async () => {
+exports.editName = async (req, res) => {
   const { name } = req.body;
   const { id } = req.params;
+  if (!name) {
+    return res.json({
+      status: "fail",
+      message: "You need to provide a name",
+    });
+  }
+  console.log(name);
+
   if (!id) {
     return res.json({
       status: "fail",
@@ -290,12 +297,6 @@ exports.editName = async () => {
     return res.json({
       status: "fail",
       message: "Invalid User ID",
-    });
-  }
-  if (!name) {
-    return res.json({
-      status: "fail",
-      message: "You need to provide a name",
     });
   }
   if (name.length < 2) {
@@ -374,8 +375,29 @@ exports.editEmail = async (req, res) => {
 };
 
 exports.editPassword = async (req, res) => {
+  console.log(req.params);
+
   const { id } = req.params;
   const { oldPassword, newPassword } = req.body;
+  const checkUserPassword = await User.findOne({
+    _id: id,
+  });
+  if (!checkUserPassword) {
+    return res.json({
+      status: "fail",
+      message: "No User",
+    });
+  }
+  const isCorrectPassword = await bcrypt.compare(
+    oldPassword,
+    checkUserPassword.password
+  );
+  if (!isCorrectPassword) {
+    return res.json({
+      status: "fail",
+      message: "Incorrect Password",
+    });
+  }
   const areTheSame = await bcrypt.compare(newPassword, oldPassword);
   if (areTheSame) {
     return res.json({
@@ -400,5 +422,35 @@ exports.editPassword = async (req, res) => {
   return res.json({
     status: "success",
     data: { user: edittedUser },
+  });
+};
+
+exports.sendVerificationCode = async (req, res) => {
+  const { email } = req.body;
+  if (!email) {
+    return res.json({
+      status: "fail",
+      message: "You must enter an email",
+    });
+  }
+  const validEmail = validate.isEmail(email);
+  if (!validEmail) {
+    return res.json({
+      status: "fail",
+      message: "You must enter a valid email",
+    });
+  }
+  const verificationCode = Math.floor(100000 + Math.random() * 900000);
+  const mailSent = await sendVerificationEmail(email, verificationCode);
+  console.log(mailSent);
+  if (!mailSent) {
+    return res.json({
+      status: "fail",
+      message: "Failed to send email",
+    });
+  }
+  return res.json({
+    status: "success",
+    code: verificationCode,
   });
 };

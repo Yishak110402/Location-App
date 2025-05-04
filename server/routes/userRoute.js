@@ -9,6 +9,7 @@ const {
   editName,
   editEmail,
   editPassword,
+  sendVerificationCode,
 } = require("../controllers/userControllers");
 const multer = require("multer")
 const router = express.Router();
@@ -33,6 +34,7 @@ router.route("/verify").put(verifyUser)
 router.route("/edit/name/:id").patch(editName)
 router.route("/edit/email/:id").patch(editEmail)
 router.route("/edit/password/:id").patch(editPassword)
+router.route("/verification").put(sendVerificationCode)
 router.route("/:id").patch(editUserDetails).get(fetchUser);
 
 module.exports = router;
