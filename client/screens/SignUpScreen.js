@@ -6,10 +6,11 @@ import { TextInput } from "react-native-gesture-handler";
 import SelectOption from "../components/SignUpScreen/SelectOption";
 import { AuthContext } from "../context/authContext";
 import ErrorDisplay from "../components/SignUpScreen/ErrorDisplay";
+import EmailVerificationCodeModal from "../components/SignUpScreen/EmailVerificationCodeModal";
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
-  const { signUpData, setSignUpData, error, showError, signUp } =
+  const { signUpData, setSignUpData, error, showError, signUp, signingUp } =
     useContext(AuthContext);
   const navigation = useNavigation();
   const goToLogIn = () => {
@@ -123,6 +124,7 @@ export default function SignUpScreen() {
         </Pressable>
         {/* </Pressable> */}
       </Modal>
+      <EmailVerificationCodeModal />
     </KeyboardAvoidingView>
   );
 }

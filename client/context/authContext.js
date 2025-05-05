@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
     email: "",
     password: "",
   });
+  const [signingUp, setSigningUp] = useState(false);
+  const [loggingIn, setLogggingIn] = useState(false);
   const [error, setError] = useState([]);
   const [showError, setShowError] = useState(true);
   const [newName, setNewName] = useState("");
@@ -93,10 +95,13 @@ export function AuthProvider({ children }) {
 
   const signUp = async () => {
     Keyboard.dismiss();
+    if (signingUp) {
+      return;
+    }
     setError([]);
     setShowError(false);
     console.log("Signing Up...");
-
+    setSigningUp(true);
     if (Object.values(signUpData).includes("")) {
       if (signUpData.name === "") {
         setError((errs) => [...errs, "You must enter a name"]);
@@ -119,6 +124,7 @@ export function AuthProvider({ children }) {
           "Your password must have at least 8 characters",
         ]);
       }
+      setSigningUp(false);
       setShowError(true);
       return;
     }
@@ -137,18 +143,19 @@ export function AuthProvider({ children }) {
     });
     if (!res.ok) {
       Alert.alert("Error", "Unable to connect to server");
+      setSigningUp(false);
       return;
     }
     const data = await res.json();
     if (data.status === "fail") {
       Alert.alert("Error", data.message);
+      setSigningUp(false);
       return;
     }
-    console.log(data);
-
     const user = data.data.user;
     setCurrentUser(data.data.user);
     await AsyncStorage.setItem("current-user", JSON.stringify(user));
+    setSigningUp(false);
     navigation.navigate("Main");
   };
 
@@ -322,6 +329,8 @@ export function AuthProvider({ children }) {
     changePassword,
     changeProfilePicture,
     imageURL,
+    signingUp,
+    loggingIn,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
