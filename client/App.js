@@ -29,6 +29,11 @@ export default function App() {
   const [loaded] = useFonts({
     Poppins: require("./assets/fonts/Poppins-Regular.ttf"),
     "Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+    "M-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
+    "M-Light": require("./assets/fonts/Montserrat-Light.ttf"),
+    "M-Black": require("./assets/fonts/Montserrat-Black.ttf"),
+    "M-ExtraBold" : require("./assets/fonts/Montserrat-ExtraBold.ttf"),
+    "M-SemiBold":require("./assets/fonts/Montserrat-SemiBold.ttf")
   });
   if (!loaded) {
     return null;

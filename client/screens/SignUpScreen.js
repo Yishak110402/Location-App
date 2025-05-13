@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { BackHandler, Modal, Pressable, StyleSheet } from "react-native";
+import { BackHandler, Image, Modal, Pressable, StyleSheet } from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import SelectOption from "../components/SignUpScreen/SelectOption";
@@ -10,7 +10,7 @@ import EmailVerificationCodeModal from "../components/SignUpScreen/EmailVerifica
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
-  const { signUpData, setSignUpData, error, showError, signUp, signingUp } =
+  const { signUpData, setSignUpData, error, showError, signUp, signingUp, verifyEmailAddress } =
     useContext(AuthContext);
   const navigation = useNavigation();
   const goToLogIn = () => {
@@ -28,6 +28,8 @@ export default function SignUpScreen() {
     return () => backPress.remove()
   }, []);
 
+
+
   const options = ["male", "female"];
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}>
@@ -39,10 +41,18 @@ export default function SignUpScreen() {
         </View>
       )}
       <View style={styles.container}>
-        <Text style={styles.headerText}>Create Account</Text>
+        <View style={styles.header}>
+          <View style={styles.shade}></View>
+          <Image style={styles.headerImage} source={require("./../assets/images/green scenery.jpg")} />
+          <Text style={styles.headerText}>CircleTrack</Text>
+        </View>
+        <View style={styles.main}>
+          <Text style={styles.signUp}>Sign Up</Text>
+          <Text style={styles.create}>Create your account</Text>
+        </View>
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
-            <Text>Name</Text>
+            <Text style={styles.formLabel}>Name</Text>
             <TextInput
               style={styles.input}
               onChangeText={(text) =>
@@ -51,7 +61,7 @@ export default function SignUpScreen() {
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text>Email</Text>
+            <Text style={styles.formLabel}>Email</Text>
             <TextInput
               style={styles.input}
               keyboardType="email-address"
@@ -62,17 +72,17 @@ export default function SignUpScreen() {
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text>Username</Text>
+            <Text style={styles.formLabel}>Username</Text>
             <TextInput
               style={styles.input}
               onChangeText={(text) =>
-                setSignUpData((form) => ({ ...form, username: text }))
+                setSignUpData((form) => ({ ...form, username: String(text) }))
               }
               autoCapitalize="none"
             />
           </View>
           <View style={styles.inputContainer}>
-            <Text>Password</Text>
+            <Text style={styles.formLabel}>Password</Text>
             <TextInput
               style={styles.input}
               secureTextEntry={true}
@@ -83,7 +93,7 @@ export default function SignUpScreen() {
             />
           </View>
           <View style={styles.selectContainer}>
-            <Text>Gender</Text>
+            <Text style={styles.formLabel}>Gender</Text>
             <Pressable onPress={() => setShowModal(true)}>
               <View style={styles.selectedOptionContainer}>
                 <Text style={styles.selectedOptionText}>
@@ -94,16 +104,17 @@ export default function SignUpScreen() {
               </View>
             </Pressable>
           </View>
-          <Pressable onPress={signUp}>
+          <Pressable style={styles.registerBtnContainer} onPress={verifyEmailAddress}>
             <View>
-              <Text>Sign Up</Text>
+              <Text style={styles.registerBtnText}>{signingUp ? "Registering..." : "Register"}</Text>
             </View>
           </Pressable>
-          <Pressable onPress={goToLogIn}>
-            <View>
-              <Text>I have an account</Text>
-            </View>
-          </Pressable>
+          <View style={styles.navOptionsContainer}>
+            <Text style={styles.alreadyGotText}>Already got an account?</Text>
+            <Pressable>
+              <Text style={styles.goToLogInText}>Log In?</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
       <Modal visible={showModal} animationType="fade" transparent>
@@ -131,30 +142,78 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingInline: 5,
-    paddingBlock: 10,
+  },
+  header:{
+    width: "100%",
+    height: 250,
+    marginTop: -23,
+    justifyContent:'center',
+    flexDirection:'row',
+  },
+  headerImage:{
+    position:"absolute",
+    width:"100%",
+    height:"100%",
+    zIndex: -1000,
+    resizeMode:'cover',
   },
   headerText: {
     fontSize: 25,
-    fontFamily: "Montserrat-Regular",
+    fontFamily: "M-Black",
+    marginTop: 150,
+    fontSize: 50,
+    color:"#b8c8b7"
+  },
+  shade:{
+    backgroundColor:"#25300C",
+    opacity:0.45,
+    height:"100%",
+    width:"100%",
+    position:'absolute',
+    zIndex: -5
+  },
+  main:{
+    alignItems: "center"
+  },
+  signUp:{
+    fontSize: 45,
+    fontFamily:"M-ExtraBold",
+    color:"#25300C"
+  },
+  create:{
+    fontSize: 16,
+    fontFamily:"M-Regular",
+    marginTop: -13,
+    color:"#25300C"
   },
   formContainer: {
     flex: 1,
     justifyContent: "center",
-    paddingInline: 5,
+    paddingInline: 10,
+    marginTop: -60
+
   },
   inputContainer: {
     display: "flex",
-    flexDirection: "row",
+    // flexDirection: "row",
     gap: 5,
     justifyContent: "space-between",
     marginBottom: 5,
-    alignItems: "center",
+  },
+  formLabel:{
+    fontSize: 14,
+    fontFamily:"M-Regular",
+    color:"#25300C",
+    marginBottom: 1
   },
   input: {
-    borderWidth: 1,
-    width: "75%",
+    borderWidth: 2,
+    width: "100%",
     borderRadius: 5,
+    height: 30,
+    borderColor:"#25300C",
+    marginBottom: 5,
+    backgroundColor:"#B8C8B7"
   },
   modalContainer: {
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -181,20 +240,44 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   selectedOptionContainer: {
-    backgroundColor: "#262626",
+    backgroundColor: "#25300C",
     paddingInline: 10,
     paddingBlock: 5,
     borderRadius: 5,
-    width: 150,
+    width: 87,
   },
   selectedOptionText: {
     color: "white",
-    fontFamily: "Montserrat-Regular",
+    fontFamily: "M-SemiBold",
     textAlign: "center",
+    fontSize: 13,
+    color:"#B8C8B7"
   },
   errorsContainer: {
     position: "absolute",
     right: 5,
     top: 45,
   },
+  registerBtnContainer:{
+    width:"100%",
+    backgroundColor:"#25300C",
+    height: 39,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius: 15,
+    marginTop: 10
+  },
+  registerBtnText:{
+    fontSize: 18,
+    fontFamily:"M-SemiBold",
+    color:"#B8C8B7"
+  },
+  navOptionsContainer:{
+    flexDirection:'row',
+    justifyContent:'center',
+    gap: 10,
+    marginTop: 10
+  },
+  alreadyGotText:{},
+  goToLogInText:{}
 });

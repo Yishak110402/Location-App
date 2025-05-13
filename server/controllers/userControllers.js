@@ -442,18 +442,79 @@ exports.editProfilePicture = async (req, res) => {
   });
 };
 exports.sendVerificationCode = async (req, res) => {
-  const { email } = req.body;
+  const { name, email, password, username, gender } = req.body;
+  if (!name) {
+    return res.json({
+      status: "fail",
+      message: "A name must be provided",
+    });
+  }
   if (!email) {
     return res.json({
       status: "fail",
-      message: "You must enter an email",
+      message: "An email must be provided",
     });
   }
+  if (!password) {
+    return res.json({
+      status: "fail",
+      message: "You must enter a password",
+    });
+  }
+  if (!username) {
+    return res.json({
+      status: "fail",
+      message: "Please enter a username",
+    });
+  }
+  if (!gender) {
+    return res.json({
+      status: "fail",
+      message: "You must enter your gender",
+    });
+  }
+
   const validEmail = validate.isEmail(email);
   if (!validEmail) {
     return res.json({
       status: "fail",
-      message: "You must enter a valid email",
+      message: "You must enter a valid email address",
+    });
+  }
+
+  if (password.length < 8) {
+    return res.json({
+      status: "fail",
+      message: "Password must be at least 8 characters",
+    });
+  }
+
+  const validUserName = isValidUsername(username);
+  if (!validUserName.isValid) {
+    return res.json({
+      status: "fail",
+      // message:"Invalid Username"
+      message: validUserName.errors.join(" ")
+    });
+  }
+  const usernameCheck = await User.findOne({ username });
+  if (usernameCheck) {
+    return res.json({
+      status: "fail",
+      message: "Username is already taken.",
+    });
+  }
+  if (gender.toLowerCase() !== "male" && gender.toLowerCase() !== "female") {
+    return res.json({
+      status: "fail",
+      message: "Please enter valid gender values",
+    });
+  }
+  const checkUser = await User.find({ email });
+  if (checkUser.length !== 0) {
+    return res.json({
+      status: "fail",
+      message: "This email is already in use",
     });
   }
   const verificationCode = Math.floor(100000 + Math.random() * 900000);

@@ -22,7 +22,6 @@ const sendVerificationEmail = async (emailTo, code) => {
   let sent
   try {
     const info = await transport.sendMail(mailOptions);
-    console.log(info);
     sent = true
   } catch (error) {
     console.log(error);

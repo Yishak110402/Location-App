@@ -36,6 +36,9 @@ export function AuthProvider({ children }) {
       ? `${localIp}/ProfilePics/${currentUser.profilePicture}`
       : `${localIp}/ProfilePics/profile.jpg`
   );
+  const [showVerificationCodeModal, setShowVerificationCodeModal] =
+    useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
   const navigation = useNavigation();
   useEffect(() => {
     if (currentUser) {
@@ -155,6 +158,8 @@ export function AuthProvider({ children }) {
     const user = data.data.user;
     setCurrentUser(data.data.user);
     await AsyncStorage.setItem("current-user", JSON.stringify(user));
+    await AsyncStorage.removeItem("circletrack-verificationcode")
+    setVerificationCode("")
     setSigningUp(false);
     navigation.navigate("Main");
   };
@@ -165,14 +170,15 @@ export function AuthProvider({ children }) {
     setShowError(false);
     if (Object.values(logInData).includes("")) {
       if (logInData.email === "") {
-        setError((errs) => [...errs, ["You must enter your email"]]);
+        setError((errs) => [...errs, "You must enter your email"]);
       }
       if (logInData.password === "") {
-        setError((errs) => [...errs, ["You must enter your password"]]);
+        setError((errs) => [...errs, "You must enter your password"]);
       }
       setShowError(true);
       return;
     }
+    setLogggingIn(true)
     const res = await fetch(`${localIp}/user`, {
       method: "PUT",
       headers: {
@@ -184,6 +190,7 @@ export function AuthProvider({ children }) {
       }),
     });
     if (!res.ok) {
+      setLogggingIn(false)
       Alert.alert("Error", "Unable to connect to the server");
       return;
     }
@@ -191,13 +198,14 @@ export function AuthProvider({ children }) {
     if (data.status === "fail") {
       setError([...error, data.message]);
       setShowError(true);
+      setLogggingIn(false)
       return;
     }
     setCurrentUser(data.data.user);
     await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user));
+    setLogggingIn(false)
     navigation.navigate("Main");
   };
-
   const logOut = async () => {
     await AsyncStorage.removeItem("current-user");
     navigation.navigate("Sign Up");
@@ -310,6 +318,69 @@ export function AuthProvider({ children }) {
     await AsyncStorage.setItem("current-user", JSON.stringify(data.data.user));
     Alert.alert("Success", "Profile picture changed successfully");
   };
+  const verifyEmailAddress = async () => {
+    Keyboard.dismiss();
+    setError([]);
+    setShowError(false);
+    if (Object.values(signUpData).includes("")) {
+      if (signUpData.name === "") {
+        setError((errs) => [...errs, "You must enter a name"]);
+      }
+      if (signUpData.email === "") {
+        setError((errs) => [...errs, "You must enter an email"]);
+      }
+      if (signUpData.username === "") {
+        setError((errs) => [...errs, "You must enter a username"]);
+      }
+      if (signUpData.gender === "") {
+        setError((errs) => [...errs, "You must specify your gender"]);
+      }
+      if (signUpData.password === "") {
+        setError((errs) => [...errs, "You must enter a password"]);
+      }
+      if (signUpData.password !== "" && signUpData.password.length < 8) {
+        setError((errs) => [
+          ...errs,
+          "Your password must have at least 8 characters",
+        ]);
+      }
+      setSigningUp(false);
+      setShowError(true);
+      return;
+    }
+    const {name,email, password, gender, username} = signUpData;
+    if (!email) {
+      Alert.alert("Error", "An email is necessary");
+      return;
+    }
+    const res = await fetch(`${localIp}/user/verification`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+         email,
+         name,
+         password,
+         gender,
+         username
+   }),
+    });
+    if (!res.ok) {
+      Alert.alert("Error", "Unable to connect to the server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    await AsyncStorage.setItem(
+      "circletrack-verificationcode",
+      JSON.stringify(data.code)
+    );
+    setShowVerificationCodeModal(true);
+  };
   const value = {
     signUpData,
     setSignUpData,
@@ -331,6 +402,11 @@ export function AuthProvider({ children }) {
     imageURL,
     signingUp,
     loggingIn,
+    showVerificationCodeModal,
+    setShowVerificationCodeModal,
+    verifyEmailAddress,
+    setVerificationCode,
+    verificationCode,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

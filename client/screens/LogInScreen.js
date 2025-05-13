@@ -8,7 +8,7 @@ import ErrorDisplay from "../components/SignUpScreen/ErrorDisplay";
 
 export default function LogInScreen() {
   const navigation = useNavigation();
-  const { logIn, setLoginData, showError, error, logInData } = useContext(AuthContext);
+  const { logIn, setLoginData, showError, error, logInData, loggingIn } = useContext(AuthContext);
   const goToSignUp = () => {
     navigation.navigate("Sign Up");
   };
@@ -53,7 +53,7 @@ export default function LogInScreen() {
           </View>
           <Pressable onPress={logIn}>
             <View>
-              <Text>Log In</Text>
+              <Text>{loggingIn ? "Logging In..." : "Log In"}</Text>
             </View>
           </Pressable>
           <Pressable onPress={goToSignUp}>
