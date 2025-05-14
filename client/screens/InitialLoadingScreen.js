@@ -26,8 +26,12 @@ export default function InitialLoadingScreen() {
     );
   };
   useEffect(() => {
-    startRotation();
-    // checkUser()
+      startRotation();
+      checkUser()
+    // const timer = setTimeout(()=>{
+    //     checkUser()
+    // },25000)
+    // return ()=> clearTimeout(timer)
   }, []);
   return (
     <View style={styles.container}>

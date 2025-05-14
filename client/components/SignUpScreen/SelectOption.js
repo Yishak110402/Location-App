@@ -31,18 +31,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 15,
     borderRadius: 10,
+    borderColor:"#f7f7f7"
   },
   circleButton: {
     borderRadius: 999,
     width: 25,
     height: 25,
     borderWidth: 1,
+    borderColor:"#f7f7f7"
   },
   optionText: {
     fontSize: 15,
     fontFamily: "Montserrat-Regular",
+    color:"#f7f7f7"
   },
   selectedCircle: {
-    backgroundColor: "black",
+    backgroundColor: "#f7f7f7",
   },
 });

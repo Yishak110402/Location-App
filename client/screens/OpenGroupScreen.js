@@ -152,6 +152,7 @@ export default function OpenGroupScreen() {
           provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
           initialRegion={INITIAL_REGION}
           ref={mapRef}
+      
           // customMapStyle={darkMapStyle}
         >
           {groupMembersLocations.length !== 0 &&

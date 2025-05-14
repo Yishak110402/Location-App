@@ -14,6 +14,12 @@ import SelectOption from "../components/SignUpScreen/SelectOption";
 import { AuthContext } from "../context/authContext";
 import ErrorDisplay from "../components/SignUpScreen/ErrorDisplay";
 import EmailVerificationCodeModal from "../components/SignUpScreen/EmailVerificationCodeModal";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
@@ -27,13 +33,28 @@ export default function SignUpScreen() {
     verifyEmailAddress,
   } = useContext(AuthContext);
   const navigation = useNavigation();
+  const transform = useSharedValue(1000);
+  const modalTransformStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: transform.value }],
+    };
+  }, []);
+  const openModalAnimation = () => {
+    transform.value = withTiming(0, { duration: 500, easing: Easing.ease });
+  };
+  const openGenderModal = () => {
+    setShowModal(true);
+    setTimeout(() => {
+      openModalAnimation();
+    }, 10);
+  };
   const goToLogIn = () => {
     navigation.navigate("Log In");
   };
 
   useEffect(() => {
     const backHandler = () => {
-      console.log("No going back");      
+      console.log("No going back");
       return true;
     };
     const backPress = BackHandler.addEventListener(
@@ -47,8 +68,7 @@ export default function SignUpScreen() {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps="handled"
-      >
+      keyboardShouldPersistTaps="handled">
       {showError && (
         <View style={styles.errorsContainer}>
           {error.map((err) => (
@@ -113,7 +133,7 @@ export default function SignUpScreen() {
           </View>
           <View style={styles.selectContainer}>
             <Text style={styles.formLabel}>Gender</Text>
-            <Pressable onPress={() => setShowModal(true)}>
+            <Pressable onPress={openGenderModal}>
               <View style={styles.selectedOptionContainer}>
                 <Text style={styles.selectedOptionText}>
                   {signUpData.gender === ""
@@ -125,6 +145,7 @@ export default function SignUpScreen() {
           </View>
           <Pressable
             style={styles.registerBtnContainer}
+            disabled={signingUp}
             onPress={verifyEmailAddress}>
             <View>
               <Text style={styles.registerBtnText}>
@@ -135,17 +156,18 @@ export default function SignUpScreen() {
           <View style={styles.navOptionsContainer}>
             <Text style={styles.alreadyGotText}>Already got an account?</Text>
             <Pressable onPress={goToLogIn}>
-              <Text style={styles.goToLogInText}>Log In?</Text>
+              <Text style={[styles.alreadyGotText, styles.goToLogInText]}>
+                Log In?
+              </Text>
             </Pressable>
           </View>
         </View>
       </View>
       <Modal visible={showModal} animationType="fade" transparent>
-        {/* <Pressable onPress={()=>(setShowModal(false))}> */}
         <Pressable
           onPress={() => setShowModal(false)}
           style={styles.modalContainer}>
-          <View style={styles.modal}>
+          <Animated.View style={[modalTransformStyle, styles.modal]}>
             <Text style={styles.modalHeader}>Select Gender</Text>
             <View>
               {options.map((opt, index) => (
@@ -156,9 +178,8 @@ export default function SignUpScreen() {
                 />
               ))}
             </View>
-          </View>
+          </Animated.View>
         </Pressable>
-        {/* </Pressable> */}
       </Modal>
       <EmailVerificationCodeModal />
     </ScrollView>
@@ -240,21 +261,25 @@ const styles = StyleSheet.create({
     paddingBlock: 5,
   },
   modalContainer: {
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: "rgba(37, 48, 12,0.45)",
     justifyContent: "flex-end",
     display: "flex",
     flex: 1,
   },
   modal: {
     width: "100%",
-    backgroundColor: "white",
-    padding: 10,
-    paddingBottom: 25,
+    backgroundColor: "#25300c",
+    paddingTop: 20,
+    paddingHorizontal: 10,
+    paddingBottom: 35,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   modalHeader: {
     fontSize: 18,
     fontFamily: "Montserrat-Regular",
     marginBottom: 15,
+    color:"#f7f7f7"
   },
   selectContainer: {
     flexDirection: "row",
@@ -281,7 +306,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 5,
     top: 45,
-    zIndex: 10000
+    zIndex: 10000,
   },
   registerBtnContainer: {
     width: "100%",
@@ -300,9 +325,17 @@ const styles = StyleSheet.create({
   navOptionsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 10,
+    gap: 2,
     marginTop: 10,
   },
-  alreadyGotText: {},
-  goToLogInText: {},
+  alreadyGotText: {
+    color: "#25300C",
+    fontSize: 15,
+    fontFamily: "M-Regular",
+  },
+  goToLogInText: {
+    fontFamily: "M-SemiBold",
+    borderBottomWidth: 3,
+    borderBottomColor: "#25300C",
+  },
 });
