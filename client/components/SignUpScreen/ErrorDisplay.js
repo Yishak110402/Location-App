@@ -11,14 +11,14 @@ export default function ErrorDisplay({err}){
 const styles = StyleSheet.create({
     errorContainer:{
         borderRadius: 5,
-        backgroundColor: "#262626",
+        backgroundColor: "#ff9892",
         marginTop: 5,
         padding: 5
     },
     errorText:{
-        fontSize: 13,
-        fontFamily:"Poppins",
-        color:"#f7f7f7"
+        fontSize: 14,
+        fontFamily:"M-SemiBold",
+        color:"#262626"
     }
     
 })

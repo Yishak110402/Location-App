@@ -101,6 +101,9 @@ export default function App() {
                   <Stack.Screen
                     name="Initial Loading"
                     component={InitialLoadingScreen}
+                    options={{
+                      animation:'fade'
+                    }}
                   />
                   <Stack.Screen name="Main" component={TabsNavFlow} />
                   <Stack.Screen name="Sign Up" component={SignUpScreen} />

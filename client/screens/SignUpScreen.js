@@ -1,6 +1,13 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { BackHandler, Image, Modal, Pressable, StyleSheet } from "react-native";
+import {
+  BackHandler,
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { KeyboardAvoidingView, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import SelectOption from "../components/SignUpScreen/SelectOption";
@@ -10,8 +17,15 @@ import EmailVerificationCodeModal from "../components/SignUpScreen/EmailVerifica
 
 export default function SignUpScreen() {
   const [showModal, setShowModal] = useState(false);
-  const { signUpData, setSignUpData, error, showError, signUp, signingUp, verifyEmailAddress } =
-    useContext(AuthContext);
+  const {
+    signUpData,
+    setSignUpData,
+    error,
+    showError,
+    signUp,
+    signingUp,
+    verifyEmailAddress,
+  } = useContext(AuthContext);
   const navigation = useNavigation();
   const goToLogIn = () => {
     navigation.navigate("Log In");
@@ -19,20 +33,22 @@ export default function SignUpScreen() {
 
   useEffect(() => {
     const backHandler = () => {
+      console.log("No going back");      
       return true;
     };
     const backPress = BackHandler.addEventListener(
       "hardwareBackPress",
       backHandler
     );
-    return () => backPress.remove()
+    return () => backPress.remove();
   }, []);
-
-
 
   const options = ["male", "female"];
   return (
-    <KeyboardAvoidingView style={{ flex: 1 }}>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled"
+      >
       {showError && (
         <View style={styles.errorsContainer}>
           {error.map((err) => (
@@ -43,7 +59,10 @@ export default function SignUpScreen() {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.shade}></View>
-          <Image style={styles.headerImage} source={require("./../assets/images/green scenery.jpg")} />
+          <Image
+            style={styles.headerImage}
+            source={require("./../assets/images/green scenery.jpg")}
+          />
           <Text style={styles.headerText}>CircleTrack</Text>
         </View>
         <View style={styles.main}>
@@ -104,14 +123,18 @@ export default function SignUpScreen() {
               </View>
             </Pressable>
           </View>
-          <Pressable style={styles.registerBtnContainer} onPress={verifyEmailAddress}>
+          <Pressable
+            style={styles.registerBtnContainer}
+            onPress={verifyEmailAddress}>
             <View>
-              <Text style={styles.registerBtnText}>{signingUp ? "Registering..." : "Register"}</Text>
+              <Text style={styles.registerBtnText}>
+                {signingUp ? "Registering..." : "Register"}
+              </Text>
             </View>
           </Pressable>
           <View style={styles.navOptionsContainer}>
             <Text style={styles.alreadyGotText}>Already got an account?</Text>
-            <Pressable>
+            <Pressable onPress={goToLogIn}>
               <Text style={styles.goToLogInText}>Log In?</Text>
             </Pressable>
           </View>
@@ -119,7 +142,9 @@ export default function SignUpScreen() {
       </View>
       <Modal visible={showModal} animationType="fade" transparent>
         {/* <Pressable onPress={()=>(setShowModal(false))}> */}
-        <Pressable onPress={()=>(setShowModal(false))} style={styles.modalContainer}>
+        <Pressable
+          onPress={() => setShowModal(false)}
+          style={styles.modalContainer}>
           <View style={styles.modal}>
             <Text style={styles.modalHeader}>Select Gender</Text>
             <View>
@@ -136,84 +161,83 @@ export default function SignUpScreen() {
         {/* </Pressable> */}
       </Modal>
       <EmailVerificationCodeModal />
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header:{
+  header: {
     width: "100%",
-    height: 250,
-    marginTop: -23,
-    justifyContent:'center',
-    flexDirection:'row',
+    height: 200,
+    justifyContent: "center",
+    flexDirection: "row",
   },
-  headerImage:{
-    position:"absolute",
-    width:"100%",
-    height:"100%",
+  headerImage: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
     zIndex: -1000,
-    resizeMode:'cover',
+    resizeMode: "cover",
   },
   headerText: {
     fontSize: 25,
     fontFamily: "M-Black",
-    marginTop: 150,
+    marginTop: 120,
     fontSize: 50,
-    color:"#b8c8b7"
+    color: "#b8c8b7",
   },
-  shade:{
-    backgroundColor:"#25300C",
-    opacity:0.45,
-    height:"100%",
-    width:"100%",
-    position:'absolute',
-    zIndex: -5
+  shade: {
+    backgroundColor: "#25300C",
+    opacity: 0.45,
+    height: "100%",
+    width: "100%",
+    position: "absolute",
+    zIndex: -5,
   },
-  main:{
-    alignItems: "center"
+  main: {
+    alignItems: "center",
   },
-  signUp:{
-    fontSize: 45,
-    fontFamily:"M-ExtraBold",
-    color:"#25300C"
+  signUp: {
+    fontSize: 40,
+    fontFamily: "M-ExtraBold",
+    color: "#25300C",
   },
-  create:{
-    fontSize: 16,
-    fontFamily:"M-Regular",
-    marginTop: -13,
-    color:"#25300C"
+  create: {
+    fontSize: 13,
+    fontFamily: "M-Regular",
+    marginTop: -10,
+    color: "#25300C",
   },
   formContainer: {
     flex: 1,
     justifyContent: "center",
     paddingInline: 10,
-    marginTop: -60
-
+    paddingBottom: 60,
+    paddingTop: 10,
   },
   inputContainer: {
     display: "flex",
-    // flexDirection: "row",
-    gap: 5,
     justifyContent: "space-between",
-    marginBottom: 5,
+    marginBottom: 3,
   },
-  formLabel:{
+  formLabel: {
     fontSize: 14,
-    fontFamily:"M-Regular",
-    color:"#25300C",
-    marginBottom: 1
+    fontFamily: "M-Regular",
+    color: "#25300C",
+    marginBottom: 0,
   },
   input: {
+    fontSize: 11,
     borderWidth: 2,
     width: "100%",
     borderRadius: 5,
-    height: 30,
-    borderColor:"#25300C",
+    height: 40,
+    borderColor: "#25300C",
     marginBottom: 5,
-    backgroundColor:"#B8C8B7"
+    backgroundColor: "#B8C8B7",
+    paddingBlock: 5,
   },
   modalContainer: {
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -251,33 +275,34 @@ const styles = StyleSheet.create({
     fontFamily: "M-SemiBold",
     textAlign: "center",
     fontSize: 13,
-    color:"#B8C8B7"
+    color: "#B8C8B7",
   },
   errorsContainer: {
     position: "absolute",
     right: 5,
     top: 45,
+    zIndex: 10000
   },
-  registerBtnContainer:{
-    width:"100%",
-    backgroundColor:"#25300C",
+  registerBtnContainer: {
+    width: "100%",
+    backgroundColor: "#25300C",
     height: 39,
-    justifyContent:'center',
-    alignItems:'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 15,
-    marginTop: 10
+    marginTop: 10,
   },
-  registerBtnText:{
+  registerBtnText: {
     fontSize: 18,
-    fontFamily:"M-SemiBold",
-    color:"#B8C8B7"
+    fontFamily: "M-SemiBold",
+    color: "#B8C8B7",
   },
-  navOptionsContainer:{
-    flexDirection:'row',
-    justifyContent:'center',
+  navOptionsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 10,
-    marginTop: 10
+    marginTop: 10,
   },
-  alreadyGotText:{},
-  goToLogInText:{}
+  alreadyGotText: {},
+  goToLogInText: {},
 });
