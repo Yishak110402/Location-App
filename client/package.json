@@ -1,17 +1,17 @@
 {
-  "name": "tracks",
+  "name": "expo53",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "start": "npx expo start --offline",
-    "android": "react-native run-android",
+    "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eas-build-pre-install": "npm config set legacy-peer-deps true"
+    "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/metro-runtime": "^4.0.1",
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@expo/metro-runtime": "~5.0.4",
+    "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-community/cli": "^18.0.0",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native/metro-config": "^0.78.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
@@ -20,31 +20,31 @@
     "@react-navigation/native-stack": "^7.2.0",
     "@react-navigation/stack": "^7.1.1",
     "axios": "^1.8.1",
-    "expo": "^52.0.46",
-    "expo-cli": "^6.3.10",
-    "expo-document-picker": "^13.0.3",
-    "expo-font": "^13.0.4",
-    "expo-location": "^18.0.7",
-    "expo-status-bar": "^2.0.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-native": "^0.76.7",
+    "expo": "~53.0.9",
+    "expo-document-picker": "~13.1.5",
+    "expo-font": "~13.3.1",
+    "expo-location": "~18.1.5",
+    "expo-status-bar": "~2.2.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-native": "^0.79.2",
     "react-native-blob-util": "^0.21.2",
     "react-native-document-picker": "^9.3.1",
     "react-native-elements": "^3.4.3",
-    "react-native-gesture-handler": "~2.20.2",
-    "react-native-maps": "^1.18.0",
+    "react-native-gesture-handler": "~2.24.0",
+    "react-native-maps": "^1.20.1",
     "react-native-pdf": "^6.7.7",
-    "react-native-reanimated": "~3.16.1",
-    "react-native-safe-area-context": "^4.12.0",
-    "react-native-screens": "~4.4.0",
-    "react-native-web": "^0.19.13",
+    "react-native-reanimated": "~3.17.4",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-screens": "~4.10.0",
+    "react-native-web": "^0.20.0",
     "react-navigation": "^5.0.0",
     "react-navigation-material-bottom-tabs": "^2.3.5",
     "setimmediate": "^1.0.5",
     "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@react-native-community/cli": "latest"
-  }
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
 }

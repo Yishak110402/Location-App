@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "CircleTrack",
-    "slug": "my-new-app",
-    "version": "0.0.2",
+    "name": "expo53",
+    "slug": "expo53",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -20,15 +20,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yishak36.circletrack"
+      "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "9ae0bbd0-0d08-4868-9b04-5a9d2ee36b67"
-      }
     }
   }
 }
