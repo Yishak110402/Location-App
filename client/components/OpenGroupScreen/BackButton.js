@@ -13,7 +13,7 @@ export default function BackButton() {
   return (
     <Pressable onPress={handleBackPress}>
       <View style={styles.btnContainer}>
-        <Ionicons name="arrow-back" color={"#f7f7f7"} size={25} />
+        <Ionicons name="arrow-back" color={"#25300c"} size={35} />
       </View>
     </Pressable>
   );
@@ -23,12 +23,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 10,
-    backgroundColor: "#262626",
+    backgroundColor: "#B8C8B7",
     zIndex: 50000,
     width: 50,
     height: 50,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,
+    borderRadius: 999,
   },
 });

@@ -29,6 +29,7 @@ export default function SettingsOptionsContainer() {
         <SettingsOption iconName="create" text="Change Name"  pressFunction={openNameChangeModal}/>
         <SettingsOption iconName="mail" text={"Change Email"} pressFunction={openEmailChangeModal} />
         <SettingsOption iconName="key" text={"Change Password"} pressFunction={openChangePasswordModal} />
+        <SettingsOption text="Change Username" />
         <SettingsOption
           pressFunction={logOut}
           iconName="log-out"
@@ -44,7 +45,6 @@ export default function SettingsOptionsContainer() {
 const styles = StyleSheet.create({
   container: {
     paddingBlock: 15,
-    paddingInline: 5,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "center",

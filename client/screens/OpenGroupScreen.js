@@ -25,6 +25,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import GroupOptions from "../components/OpenGroupScreen/GroupOptions";
 import BackButton from "../components/OpenGroupScreen/BackButton";
 import RenameGroupModal from "../components/OpenGroupScreen/RenameGroupModal";
+import OptionButton from "../components/OpenGroupScreen/OptionButtons";
+import AllMembersModal from "../components/OpenGroupScreen/AllMembersModal";
 
 export default function OpenGroupScreen() {
   const navigation = useNavigation();
@@ -40,6 +42,7 @@ export default function OpenGroupScreen() {
     useContext(GeneralContext);
   const [showGroupOptions, setShowGroupOptions] = useState(false);
   const [showRenameGroupModal, setShowRenameGroupModal] = useState(false)
+  const [showAllMembers, setShowAllMembers] = useState(true)
   const mapRef = useRef();
 
   const route = useRoute();
@@ -144,10 +147,8 @@ export default function OpenGroupScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
-      
-      <View style={styles.mapContainer}>
-      
+    <View style={{ flex: 1 }}>      
+      <View style={styles.mapContainer}>      
         <MapView
           style={styles.map}
           provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
@@ -176,15 +177,7 @@ export default function OpenGroupScreen() {
         </MapView>
         <BackButton />
       </View>
-      <View style={{ flex: 0.4 }}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.membersHeader}>Members</Text>
-          <Pressable onPress={() => setShowGroupOptions(true)}>
-            <View style={styles.headerBtnContainer}>
-              <Text style={styles.headerBtnText}>Options</Text>
-            </View>
-          </Pressable>
-        </View>
+      <View style={styles.otherCOntainer}>
         <FlatList
           horizontal
           data={currGroup.members}
@@ -195,11 +188,17 @@ export default function OpenGroupScreen() {
             return item;
           }}
         />
-        <Pressable onPress={() => setShowUsernameSearchModal(true)}>
+        <View style={styles.optionsContainer}>
+          <OptionButton text="All Members" pressFunction={()=>(setShowAllMembers(true))}/>
+          <OptionButton text="Invite" />
+          <OptionButton text="Options" />
+
+        </View>
+        {/* <Pressable onPress={() => setShowUsernameSearchModal(true)}>
           <View style={styles.inviteBtnContainer}>
             <Text style={styles.inviteBtnText}>Invite New Members</Text>
           </View>
-        </Pressable>
+        </Pressable> */}
       </View>
     
       <SearchUserModal currentGroupId={currGroup._id} />
@@ -210,7 +209,7 @@ export default function OpenGroupScreen() {
         setShowRenameGroupModal = {setShowRenameGroupModal}
       />
       <RenameGroupModal showModal={showRenameGroupModal} setShowModal={setShowRenameGroupModal} setOptionsModal = {setShowGroupOptions} />
-      
+      <AllMembersModal showAllMembers={showAllMembers} setShowAllMembers={setShowAllMembers} />      
     </View>
   );
 }
@@ -265,4 +264,14 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
     fontSize: 15,
   },
+  optionsContainer:{
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center'
+  },
+  otherCOntainer:{
+    height: 225,
+    paddingBottom: 20,
+    paddingHorizontal: 20
+  }
 });

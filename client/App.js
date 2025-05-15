@@ -18,7 +18,6 @@ import { GeneralProvider } from "./context/generalContext";
 import InitialLoadingScreen from "./screens/InitialLoadingScreen";
 import { GroupProvider } from "./context/groupContext";
 import OpenGroupScreen from "./screens/OpenGroupScreen";
-import TestSocketScreen from "./screens/TestSocketScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
@@ -33,7 +32,8 @@ export default function App() {
     "M-Light": require("./assets/fonts/Montserrat-Light.ttf"),
     "M-Black": require("./assets/fonts/Montserrat-Black.ttf"),
     "M-ExtraBold" : require("./assets/fonts/Montserrat-ExtraBold.ttf"),
-    "M-SemiBold":require("./assets/fonts/Montserrat-SemiBold.ttf")
+    "M-SemiBold":require("./assets/fonts/Montserrat-SemiBold.ttf"),
+    "M-Medium": require("./assets/fonts/Montserrat-Medium.ttf")
   });
   if (!loaded) {
     return null;

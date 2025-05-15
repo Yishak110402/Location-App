@@ -25,15 +25,11 @@ export default function Profile() {
   return (
     <View style={styles.container}>
       <View style={styles.nameAndImageContainer}>
-        <View>
           <Pressable onPress={changeProfilePicture}>
-            <Image style={styles.image} source={{ uri: imageURL }} />
-            <View style={styles.editProfile}>
-              <Ionicons name="pencil" color={"white"} size={25} />
-            </View>
+            <Image resizeMode="cover" style={styles.image} source={{ uri: imageURL }} />
           </Pressable>
-        </View>
         <Text style={styles.nameText}>Hello {currentUser.name}!</Text>
+        <Text style={styles.usernameText}>@{currentUser.username}</Text>
       </View>
     </View>
   );
@@ -41,24 +37,29 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    height: "20%",
-    paddingTop: 15,
+    height: 208,
+    paddingTop: 30,
     paddingInline: 10,
+    backgroundColor:"#25300c"
   },
   nameAndImageContainer: {
-    flexDirection: "row",
-    gap: 25,
     alignItems: "center",
   },
   image: {
     height: 100,
     width: 100,
     borderRadius: 999,
-    objectFit: "cover",
+    resizeMode: "cover",
   },
   nameText: {
-    fontSize: 20,
-    fontFamily: "Montserrat-Regular",
+    fontSize: 29,
+    fontFamily: "M-SemiBold",
+    color:"white"
+  },
+  usernameText:{
+    fontSize: 12,
+    color:"#f7f7f7",
+    fontFamily:"M-Regular"
   },
   editProfile: {
     backgroundColor: "rgba(0,0,0,0.5)",

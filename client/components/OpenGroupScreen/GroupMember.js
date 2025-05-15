@@ -37,53 +37,39 @@ export default function GroupMember({
       <Text style={styles.textStyle}>
         {memberData.name ? memberData.name : ""}
       </Text>
-      <View
-        style={[
-          styles.indicator,
-          availableMembersIds.includes(memberData._id)
-            ? { backgroundColor: "green" }
-            : { backgroundColor: "red" },
-        ]}></View>
-      {currentUser._id === currGroup.owner && (
-        <View>
-          <Pressable onPress={() => kickMemberFromGroup(currGroup, memberData._id)}>
-            <Ionicons color={"red"} name="trash" size={25} />
-          </Pressable>
-        </View>
-      )}
+      <Text style={styles.onlineText}>Online</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderRadius: 5,
-    marginInline: 10,
     justifyContent: "center",
-    marginBlock: 15,
-    paddingInline: 25,
     textAlign: "center",
     alignItems: "center",
-    paddingBlock: 20,
+    borderRadius: 10,
+    backgroundColor: "#b8c8b7",
+    marginRight: 20,
+    width: 120,
+    height: 98,
+    marginTop: 24,
+    padding: 10,
   },
   image: {
-    width: 30,
-    height: 30,
-    objectFit: "contain",
-    borderRadius: 999,
+    width: 61,
+    height: 50,
+    borderRadius: 8,
     textAlign: "center",
   },
   textStyle: {
-    fontFamily: "Montserrat-Regular",
-    fontSize: 15,
+    fontFamily: "M-Regular",
+    fontSize: 12,
     textAlign: "center",
-    marginTop: 15,
+    marginTop: 5
   },
-  indicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 999,
-    // backgroundColor:'green'
+  onlineText: {
+    fontSize: 11,
+    fontFamily: "M-SemiBold",
+    color:"#3F8643"
   },
 });
