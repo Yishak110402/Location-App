@@ -42,7 +42,7 @@ export default function OpenGroupScreen() {
     useContext(GeneralContext);
   const [showGroupOptions, setShowGroupOptions] = useState(false);
   const [showRenameGroupModal, setShowRenameGroupModal] = useState(false)
-  const [showAllMembers, setShowAllMembers] = useState(true)
+  const [showAllMembers, setShowAllMembers] = useState(false)
   const mapRef = useRef();
 
   const route = useRoute();
@@ -190,7 +190,7 @@ export default function OpenGroupScreen() {
         />
         <View style={styles.optionsContainer}>
           <OptionButton text="All Members" pressFunction={()=>(setShowAllMembers(true))}/>
-          <OptionButton text="Invite" />
+          <OptionButton text="Invite" pressFunction={() => setShowUsernameSearchModal(true)} />
           <OptionButton text="Options" />
 
         </View>
