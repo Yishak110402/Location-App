@@ -25,12 +25,6 @@ export default function InvitationsScreen() {
     <View style={styles.container}>
       <Text style={styles.header}>Invitations</Text>
       <View style={styles.invitationsContainer}>
-        {/* {allInvitations.length === 0 && (
-          <View>
-            <Text>You have no invitations yet</Text>
-          </View>
-        )} */}
-
         <FlatList
           renderItem={({ item }) => {
             return <InvitationListItem invitation={item} />;
@@ -60,11 +54,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    fontFamily: "Montserrat-Regular",
-    color: "#262626",
+    fontFamily: "M-SemiBold",
+    color: "#25300c",
     textAlign: "center",
     marginBlock: 15,
-    fontSize: 20,
+    fontSize: 25,
     textDecorationLine: "underline",
   },
   invitationsContainer: {
@@ -75,9 +69,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  emptyText:{
-    fontSize: 15,
-    marginTop: 50,
-    fontFamily:"Montserrat-Regular"
-  }
+  emptyText: {
+    fontSize: 20,
+    fontFamily: "M-Regular",
+    color: "#25300c",
+    marginTop: 25,
+  },
 });
