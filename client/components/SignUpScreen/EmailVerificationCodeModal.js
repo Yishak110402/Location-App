@@ -85,6 +85,7 @@ export default function EmailVerificationCodeModal() {
             maxLength={6}
             keyboardType="number-pad"
             value={verificationCode}
+            placeholderTextColor={"#f7f7f7"}
           />
           <Pressable
             style={[styles.verifyBtnContainer, disabled && styles.disabledBtn]}>
@@ -100,31 +101,34 @@ export default function EmailVerificationCodeModal() {
 
 const styles = StyleSheet.create({
   outerContainer: {
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(37, 48, 12,0.25)",
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
   },
   innerContainer: {
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#25300c",
     width: "100%",
     paddingBottom: 20,
     paddingInline: 10,
   },
   header: {
-    fontSize: 15,
-    fontFamily: "Montserrat-Regular",
+    fontSize: 17,
+    fontFamily: "M-SemiBold",
     marginBlock: 10,
+    color:"#f7f7f7"
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 2,
     marginTop: 8,
     borderRadius: 8,
     fontSize: 18,
     letterSpacing: 5,
+    borderColor:"#f7f7f7",
+    color:"#f7f7f7",
   },
   verifyBtnContainer: {
-    backgroundColor: "#262626",
+    backgroundColor: "#f7f7f7",
     width: 160,
     justifyContent: "center",
     alignItems: "center",
@@ -133,7 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   verifyBtnText: {
-    color: "#f7f7f7",
+    color: "#25300c",
     fontFamily: "Montserrat-Regular",
     fontSize: 13,
   },

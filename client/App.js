@@ -45,12 +45,15 @@ export default function App() {
           headerShown: false,
           tabBarStyle: {
             height: 64,
+            backgroundColor:"#25300c"
           },
-          tabBarInactiveTintColor: "#262626",
+          tabBarInactiveTintColor: "#b8c8b7",
           tabBarLabelStyle: {
             fontSize: 13,
             fontFamily: "Montserrat-Regular",
           },
+          tabBarActiveBackgroundColor: "#b8c8b7",
+          tabBarActiveTintColor: "#25300c"
         }}>
         <Tabs.Screen
           name="Groups"

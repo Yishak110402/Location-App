@@ -111,6 +111,7 @@ export default function OpenGroupScreen() {
         zoom: 20
       }, {duration: 1500});
     }
+    
     currLocation();
   }, []);
   useEffect(() => {

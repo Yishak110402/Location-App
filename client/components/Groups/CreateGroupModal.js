@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import {
   Modal,
   View,
@@ -8,15 +8,37 @@ import {
   StyleSheet,
 } from "react-native";
 import { GroupContext } from "../../context/groupContext";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 export default function CreateGroupModal({ showModal, setShowModal }) {
+  const transform = useSharedValue(100);
+  const modalTransformStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: transform.value }],
+    };
+  }, []);
   const {
     showCreateGroupModal,
     setShowCreateGroupModal,
     setNewGroupName,
     newGroupName,
-    createGroup
+    createGroup,
   } = useContext(GroupContext);
+
+  const startModalAnimation = () => {
+    transform.value = withTiming(0, { duration: 400, easing: Easing.linear });
+  };
+  useEffect(() => {
+    setTimeout(() => {
+      startModalAnimation();
+    }, 10);
+  }, []);
+
   return (
     <Modal
       animationType="fade"
@@ -24,53 +46,57 @@ export default function CreateGroupModal({ showModal, setShowModal }) {
       transparent
       visible={showCreateGroupModal}
       onRequestClose={() => setShowCreateGroupModal(false)}>
-      <View style={styles.outerContainer}>
-        <View style={styles.innerContainer}>
-          <View>
-            <Text style={styles.headerText}>Give your group a name</Text>
-            <TextInput
-              placeholder="Group Name"
-              style={styles.nameInput}
-              autoCapitalize="words"
-              autoCorrect={false}
-              value={newGroupName}
-              onChangeText={(text) => setNewGroupName(text)}
-            />
-          </View>
+      <Pressable
+        onPress={() => setShowCreateGroupModal(false)}
+        style={styles.outerContainer}>
+        <Animated.View style={[modalTransformStyle, styles.innerContainer]}>
+          <Text style={styles.headerText}>Enter New Group Name</Text>
+          <TextInput
+            style={styles.nameInput}
+            autoCapitalize="words"
+            autoCorrect={false}
+            value={newGroupName}
+            onChangeText={(text) => setNewGroupName(text)}
+          />
           <Pressable onPress={createGroup}>
             <View style={styles.btnContainer}>
-              <Text style={styles.btnTexts}>Create</Text>
+              <Text style={styles.btnTexts}>Create Group</Text>
             </View>
           </Pressable>
-        </View>
-      </View>
+        </Animated.View>
+      </Pressable>
     </Modal>
   );
 }
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(37, 48, 12,0.25)",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
   },
   innerContainer: {
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#25300c",
     width: "100%",
     paddingBlock: 15,
     paddingInline: 10,
+    alignItems: "center",
+    paddingBottom:25,
+    borderTopRightRadius: 35,
+    borderTopLeftRadius: 35,
   },
   btnContainer: {
-    backgroundColor: "#262626",
+    backgroundColor: "#b8c8b7",
     borderRadius: 5,
     padding: 4,
-    width: 100,
+    paddingVertical: 10,
+    width: 150,
   },
   btnTexts: {
     fontSize: 14,
-    fontfamily: "Montserrat-Regular",
-    color: "#f7f7f7",
+    fontFamily: "M-SemiBold",
+    color: "#25300c",
     textAlign: "center",
   },
   nameInput: {
@@ -79,10 +105,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 5,
     marginBlock: 10,
-    paddingLeft: 5,
+    paddingLeft: 15,
+    width: "100%",
+    fontFamily: "M-Regular",
   },
   headerText: {
     fontSize: 18,
-    fontFamily: "Montserrat-Regular",
+    fontFamily: "M-SemiBold",
+    color: "#b8c8b7",
   },
 });

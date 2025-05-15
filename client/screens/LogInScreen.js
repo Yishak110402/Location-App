@@ -62,15 +62,17 @@ export default function LogInScreen() {
           </View>
           <Pressable style={styles.registerBtnContainer} onPress={logIn}>
             <View>
-              <Text style={styles.registerBtnText}>{loggingIn ? "Logging In..." : "Log In"}</Text>
+              <Text style={styles.registerBtnText}>
+                {loggingIn ? "Logging In..." : "Log In"}
+              </Text>
             </View>
           </Pressable>
-            <View style={styles.navOptionsContainer}>
-              <Text style={styles.dontHaveText}>I don't have an account.</Text>
-              <Pressable onPress={goToSignUp}>
-                <Text style={styles.signUpText}>Sign Up?</Text>
-              </Pressable>
-            </View>
+          <View style={styles.navOptionsContainer}>
+            <Text style={styles.dontHaveText}>I don't have an account.</Text>
+            <Pressable onPress={goToSignUp}>
+              <Text style={styles.signUpText}>Sign Up?</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
     </ScrollView>
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingInline: 10,
     paddingBottom: 60,
-    marginTop: 30
+    marginTop: 30,
     // paddingTop: 10,
   },
   inputContainer: {
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   input: {
-    fontSize: 11,
+    fontSize: 13,
     borderWidth: 2,
     width: "100%",
     borderRadius: 5,
@@ -151,6 +153,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: "#B8C8B7",
     paddingBlock: 5,
+    fontFamily: "M-Regular",
+    paddingHorizontal: 10,
   },
   modalContainer: {
     backgroundColor: "rgba(37, 48, 12,0.45)",

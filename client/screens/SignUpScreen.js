@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   input: {
-    fontSize: 11,
+    fontSize: 13,
     borderWidth: 2,
     width: "100%",
     borderRadius: 5,
@@ -259,9 +259,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     backgroundColor: "#B8C8B7",
     paddingBlock: 5,
+    fontFamily:"M-Regular",
+    paddingHorizontal:10
   },
   modalContainer: {
-    backgroundColor: "rgba(37, 48, 12,0.45)",
+    backgroundColor: "rgba(37, 48, 12,0.25)",
     justifyContent: "flex-end",
     display: "flex",
     flex: 1,

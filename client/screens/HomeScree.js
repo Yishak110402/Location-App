@@ -13,6 +13,7 @@ import { GeneralContext } from "../context/generalContext";
 import GroupListItem from "../components/Groups/GroupListItem";
 import CreateGroupModal from "../components/Groups/CreateGroupModal";
 import { GroupContext } from "../context/groupContext";
+import CreateNewGroupButton from "../components/Groups/CreateNewGroupButton";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
@@ -39,12 +40,14 @@ export default function HomeScreen() {
     fetchUserGroups();
     setRefreshing(false);
   };
+  const openNewGroupModal = ()=>{
+    setShowCreateGroupModal(true)
+  }
 
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
         <Text style={styles.headerText}>Groups</Text>
-
         <FlatList
           data={allGroups}
           renderItem={({ item }) => {
@@ -63,11 +66,7 @@ export default function HomeScreen() {
           }
         />
       </View>
-      <Pressable onPress={() => setShowCreateGroupModal(true)}>
-        <View style={styles.btnContainer}>
-          <Text style={styles.btnText}>Create Group</Text>
-        </View>
-      </Pressable>
+      <CreateNewGroupButton pressFunction={openNewGroupModal} />
       <CreateGroupModal
         showModal={showCreateGroupModal}
         setShowModal={setShowCreateGroupModal}
@@ -88,11 +87,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerText: {
-    fontFamily: "Montserrat-Regular",
-    color: "#262626",
+    fontFamily: "M-SemiBold",
+    color: "#25300c",
     textAlign: "center",
     marginBlock: 15,
-    fontSize: 20,
+    fontSize: 25,
     textDecorationLine: "underline",
   },
   btnText: {
@@ -100,8 +99,10 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
   },
   noGroupText: {
-    fontSize: 16,
-    fontFamily: "Poppins",
+    fontSize: 20,
+    fontFamily: "M-Regular",
+    color:"#25300c",
+    marginTOp: 25
   },
   noGroupTextContainer: {
     flex: 1,
