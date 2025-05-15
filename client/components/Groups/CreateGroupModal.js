@@ -31,13 +31,14 @@ export default function CreateGroupModal({ showModal, setShowModal }) {
   } = useContext(GroupContext);
 
   const startModalAnimation = () => {
-    transform.value = withTiming(0, { duration: 400, easing: Easing.linear });
+    transform.value = 100
+    transform.value = withTiming(0, { duration: 100, easing: Easing.linear });
   };
   useEffect(() => {
     setTimeout(() => {
       startModalAnimation();
     }, 10);
-  }, []);
+  }, [showCreateGroupModal]);
 
   return (
     <Modal
