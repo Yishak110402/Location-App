@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "expo53",
+    "name": "CircleTrack",
     "slug": "expo53",
-    "version": "1.0.0",
+    "version": "0.0.3",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/green scenery.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/green scenery.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +17,24 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/green scenery.jpg",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/green scenery.jpg"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0ccaf988-95a2-40c5-b25d-780dc7ec38bd"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0ccaf988-95a2-40c5-b25d-780dc7ec38bd"
     }
   }
 }

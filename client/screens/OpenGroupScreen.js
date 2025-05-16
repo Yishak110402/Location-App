@@ -194,11 +194,6 @@ export default function OpenGroupScreen() {
           <OptionButton text="Options" />
 
         </View>
-        {/* <Pressable onPress={() => setShowUsernameSearchModal(true)}>
-          <View style={styles.inviteBtnContainer}>
-            <Text style={styles.inviteBtnText}>Invite New Members</Text>
-          </View>
-        </Pressable> */}
       </View>
     
       <SearchUserModal currentGroupId={currGroup._id} />
