@@ -21,7 +21,6 @@ import OpenGroupScreen from "./screens/OpenGroupScreen";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function App() {
-  const Drawer = createDrawerNavigator();
   const Tabs = createBottomTabNavigator();
   const Stack = createNativeStackNavigator();
 
@@ -33,7 +32,8 @@ export default function App() {
     "M-Black": require("./assets/fonts/Montserrat-Black.ttf"),
     "M-ExtraBold" : require("./assets/fonts/Montserrat-ExtraBold.ttf"),
     "M-SemiBold":require("./assets/fonts/Montserrat-SemiBold.ttf"),
-    "M-Medium": require("./assets/fonts/Montserrat-Medium.ttf")
+    "M-Medium": require("./assets/fonts/Montserrat-Medium.ttf"),
+    "M-Bold": require("./assets/fonts/Montserrat-Bold.ttf")
   });
   if (!loaded) {
     return null;

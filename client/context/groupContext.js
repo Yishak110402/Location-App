@@ -195,20 +195,38 @@ export function GroupProvider({ children }) {
       setAllGroups((prevGroups) =>
         prevGroups.filter((group) => group._id !== id)
       );
-      navigation.navigate("Main")
+      navigation.navigate("Main");
       return;
     }
   };
-  const kickMemberFromGroup = async(group, userId)=>{
-    if(group.owner !== currentUser._id){
-      Alert.alert("Error", "You cannot kick members out of a group because you are not the owner")
-      return
+  const kickMemberFromGroup = async (group, userId) => {
+    if (group.owner !== currentUser._id) {
+      Alert.alert(
+        "Error",
+        "You cannot kick members out of a group because you are not the owner"
+      );
+      return;
     }
-    if(currentUser._id === userId){
-      Alert.alert("Error", "You cannot kick yourself out of a group")
-      return
+    if (currentUser._id === userId) {
+      Alert.alert("Error", "You cannot kick yourself out of a group");
+      return;
     }
-  } 
+  };
+  const fetchUser = async (member) => {
+    const res = await fetch(`${localIp}/user/${member}`);
+    if (!res.ok) {
+      Alert.alert("Error", "Failed to connect to the server");
+      return;
+    }
+    const data = await res.json();
+    if (data.status === "fail") {
+      Alert.alert("Error", data.message);
+      return;
+    }
+    console.log(data.data.user);
+
+    return data.data.user;
+  };
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
@@ -243,7 +261,8 @@ export function GroupProvider({ children }) {
     availableMembersIds,
     setAvailableMembersIds,
     checkGroup,
-    kickMemberFromGroup
+    kickMemberFromGroup,
+    fetchUser,
   };
   return (
     <GroupContext.Provider value={value}>{children}</GroupContext.Provider>

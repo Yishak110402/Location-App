@@ -27,6 +27,7 @@ import BackButton from "../components/OpenGroupScreen/BackButton";
 import RenameGroupModal from "../components/OpenGroupScreen/RenameGroupModal";
 import OptionButton from "../components/OpenGroupScreen/OptionButtons";
 import AllMembersModal from "../components/OpenGroupScreen/AllMembersModal";
+import MemberOptionsModal from "../components/OpenGroupScreen/MemberOptionsModal";
 
 export default function OpenGroupScreen() {
   const navigation = useNavigation();
@@ -41,8 +42,8 @@ export default function OpenGroupScreen() {
   const { getCurrentLocation, location, setLocation, currentUser } =
     useContext(GeneralContext);
   const [showGroupOptions, setShowGroupOptions] = useState(false);
-  const [showRenameGroupModal, setShowRenameGroupModal] = useState(false)
-  const [showAllMembers, setShowAllMembers] = useState(false)
+  const [showRenameGroupModal, setShowRenameGroupModal] = useState(false);
+  const [showAllMembers, setShowAllMembers] = useState(false);
   const mapRef = useRef();
 
   const route = useRoute();
@@ -81,12 +82,6 @@ export default function OpenGroupScreen() {
         longitude: currLocation.coords.longitude,
       }));
       const currUser = JSON.parse(await AsyncStorage.getItem("current-user"));
-
-      // socket.emit("sendLocation", {
-      //   latitude: currLocation.coords.latitude,
-      //   longitude: currLocation.coords.longitude,
-      //   userId: currUser._id,
-      // });
     }, 5000);
     return () => clearInterval(sendLocationInterval);
   }, []);
@@ -106,15 +101,18 @@ export default function OpenGroupScreen() {
           id: currUser._id,
         },
       });
-      mapRef.current.animateCamera({
-        center: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+      mapRef.current.animateCamera(
+        {
+          center: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+          zoom: 20,
         },
-        zoom: 20
-      }, {duration: 1500});
+        { duration: 1500 }
+      );
     }
-    
+
     currLocation();
   }, []);
   useEffect(() => {
@@ -133,7 +131,7 @@ export default function OpenGroupScreen() {
     const backPress = () => {
       socket.disconnect();
       setGroupMembersLocations([]);
-      setAvailableMembersIds([])
+      setAvailableMembersIds([]);
       navigation.navigate("Main");
     };
     const backButton = BackHandler.addEventListener(
@@ -147,21 +145,21 @@ export default function OpenGroupScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>      
-      <View style={styles.mapContainer}>      
+    <View style={{ flex: 1 }}>
+      <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
           provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
           initialRegion={INITIAL_REGION}
           ref={mapRef}
-      
+
           // customMapStyle={darkMapStyle}
         >
           {groupMembersLocations.length !== 0 &&
             groupMembersLocations.map((location, idx) => (
               <Marker
                 key={idx}
-                title={currentUser._id}
+                title={"User"}
                 coordinate={location.location}>
                 <Image
                   source={require("./../assets/profile pic.jpg")}
@@ -180,31 +178,56 @@ export default function OpenGroupScreen() {
       <View style={styles.otherCOntainer}>
         <FlatList
           horizontal
-          data={currGroup.members}
+          data={availableMembersIds}
           renderItem={({ item }) => {
-            return <GroupMember currGroup={currGroup} availableMembersIds={availableMembersIds} member={item} />;
+            return (
+              <GroupMember
+                currGroup={currGroup}
+                availableMembersIds={availableMembersIds}
+                member={item}
+              />
+            );
           }}
           keyExtractor={(item) => {
             return item;
           }}
+          ListEmptyComponent={
+            <View style={styles.noMembersContainer}>
+              <Text style={styles.noMembersText}>No Online Members</Text>
+            </View>
+          }
         />
         <View style={styles.optionsContainer}>
-          <OptionButton text="All Members" pressFunction={()=>(setShowAllMembers(true))}/>
-          <OptionButton text="Invite" pressFunction={() => setShowUsernameSearchModal(true)} />
+          <OptionButton
+            text="All Members"
+            pressFunction={() => setShowAllMembers(true)}
+          />
+          <OptionButton
+            text="Invite"
+            pressFunction={() => setShowUsernameSearchModal(true)}
+          />
           <OptionButton text="Options" />
-
         </View>
       </View>
-    
+
       <SearchUserModal currentGroupId={currGroup._id} />
       <GroupOptions
         showModal={showGroupOptions}
         currentGroup={currGroup}
         setShowModal={setShowGroupOptions}
-        setShowRenameGroupModal = {setShowRenameGroupModal}
+        setShowRenameGroupModal={setShowRenameGroupModal}
       />
-      <RenameGroupModal showModal={showRenameGroupModal} setShowModal={setShowRenameGroupModal} setOptionsModal = {setShowGroupOptions} />
-      <AllMembersModal showAllMembers={showAllMembers} setShowAllMembers={setShowAllMembers} />      
+      <RenameGroupModal
+        showModal={showRenameGroupModal}
+        setShowModal={setShowRenameGroupModal}
+        setOptionsModal={setShowGroupOptions}
+      />
+      <AllMembersModal
+        showAllMembers={showAllMembers}
+        setShowAllMembers={setShowAllMembers}
+        currentGroup={currGroup}
+      />
+      <MemberOptionsModal />
     </View>
   );
 }
@@ -216,7 +239,7 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
   },
   mapContainer: {
-    position: 'relative',
+    position: "relative",
     flex: 1,
   },
   membersHeader: {
@@ -259,14 +282,23 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Regular",
     fontSize: 15,
   },
-  optionsContainer:{
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'center'
+  optionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  otherCOntainer:{
+  otherCOntainer: {
     height: 225,
     paddingBottom: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+  },
+  noMembersContainer:{
+    flex: 1,
+  },
+  noMembersText:{
+    fontSize: 25,
+    fontFamily:"M-SemiBold",
+    textAlign:'center',
+    marginTop: 15
   }
 });

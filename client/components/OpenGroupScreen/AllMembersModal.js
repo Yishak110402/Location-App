@@ -1,4 +1,5 @@
 import {
+  FlatList,
   Modal,
   Pressable,
   ScrollView,
@@ -8,26 +9,43 @@ import {
 } from "react-native";
 import SearchMemberResultListItem from "./SearchMemberResultListItem";
 
-export default function AllMembersModal({ showAllMembers, setShowAllMembers }) {
-    const closeModal = ()=>{
-        setShowAllMembers(false)
-    }
+export default function AllMembersModal({
+  showAllMembers,
+  setShowAllMembers,
+  currentGroup,
+}) {
+  const closeModal = () => {
+    setShowAllMembers(false);
+  };
+  const doNothing = ()=>{
+    return
+  }
   return (
     <Modal visible={showAllMembers} transparent onRequestClose={closeModal}>
       <Pressable onPress={closeModal} style={styles.outerContainer}>
-        <View style={styles.innerContainer}>
+        <Pressable onPress={doNothing}>
+          <View style={styles.innerContainer}>
             <TextInput
               style={styles.membersNameInput}
               placeholder="Enter Member Name"
             />
             <View style={styles.membersContainer}>
-                <SearchMemberResultListItem />
-                <SearchMemberResultListItem />
-                <SearchMemberResultListItem />
-                <SearchMemberResultListItem />
-                <SearchMemberResultListItem />
+              <FlatList
+              contentContainerStyle={styles.membersContainer}
+              numColumns={2}
+              data={currentGroup.members}
+              renderItem={({item})=>{
+                console.log("Item");                
+                console.log(item);                
+                return <SearchMemberResultListItem memberId={item} />
+              }}
+              key={(item)=>{
+                return item
+              }}
+              />
             </View>
-        </View>
+          </View>
+        </Pressable>
       </Pressable>
     </Modal>
   );
@@ -55,10 +73,11 @@ const styles = StyleSheet.create({
     fontFamily: "M-Light",
     fontSize: 12,
   },
-  membersContainer:{
-    flexDirection: 'row',
-    flexWrap:'wrap',
+  membersContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 20,
-    marginTop: 15
-  }
+    marginTop: 15,
+    flex: 1,
+  },
 });
