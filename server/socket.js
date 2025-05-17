@@ -19,6 +19,19 @@ function setupSocket(serverIo) {
       };      
       io.to(room).emit("updateLocations", { data: usersInGroups[room] });
     });
+    socket.on('nudge',({userId, room, senderId})=>{
+      if(!usersInGroups[room][userId]){
+        socket.to(usersInGroups[room][senderId].socketId).emit({
+          message:"User is not connected"
+        })
+        return
+      }
+      socket.to(usersInGroups[room][userId]).emit({
+        from: senderId,
+        to: userId,
+        message:"You have been nudged"
+      })
+    })
     socket.on('disconnect',()=>{
       for(let room in usersInGroups){
         for(let user in usersInGroups[room]){
@@ -33,5 +46,4 @@ function setupSocket(serverIo) {
     })
   });
 }
-
 module.exports = { setupSocket };

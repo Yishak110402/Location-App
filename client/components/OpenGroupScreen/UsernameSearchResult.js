@@ -4,15 +4,18 @@ import { Image, Text, View } from "react-native";
 import { GroupContext } from "../../context/groupContext";
 
 export default function UsernameSearchResult({ result, currentGroupId }) {
-    const {sendInvitation} = useContext(GroupContext)
+  const { sendInvitation } = useContext(GroupContext);
   return (
-    <Pressable onPress={()=>(sendInvitation(result._id, currentGroupId))}>
+    <Pressable onPress={() => sendInvitation(result._id, currentGroupId)}>
       <View style={styles.container}>
         <Image
           style={styles.image}
           source={require("./../../assets/profile pic.jpg")}
         />
-        <Text style={styles.usernameText}>{result.username}</Text>
+        <View>
+          <Text style={styles.nameText}>{result.name}</Text>
+          <Text style={styles.usernameText}>@{result.username}</Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -23,11 +26,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 5,
     alignItems: "center",
-    gap: 30,
-    paddingInline: 10,
-    paddingBlock: 8,
-    backgroundColor: "#262626",
+    gap: 15,
+    height: 60,
+    backgroundColor: "#25300c",
     borderRadius: 9,
+    paddingHorizontal: 8
   },
   image: {
     width: 45,
@@ -35,8 +38,13 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   usernameText: {
-    fontSize: 15,
-    fontFamily: "Montserrat-Regular",
+    fontSize: 11,
+    fontFamily: "M-Light",
     color: "#fff",
   },
+  nameText:{
+    fontSize: 15,
+    fontFamily:"M-Regular",
+    color:"#fff"
+  }
 });

@@ -1,13 +1,14 @@
 import { useContext, useEffect, useState } from "react";
-import { View, Text, Alert, StyleSheet, Image, Pressable } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { GeneralContext } from "../../context/generalContext";
-import { Ionicons } from "@expo/vector-icons";
 import { GroupContext } from "../../context/groupContext";
 
 export default function GroupMember({
   member,
-  availableMembersIds,
   currGroup,
+  mapRef,
+  availableMembersIds,
+  locations
 }) {
   const { localIp, currentUser } = useContext(GeneralContext);
   const { kickMemberFromGroup, fetchUser } = useContext(GroupContext);
@@ -20,8 +21,22 @@ export default function GroupMember({
     };
     loadUserDetails()
   }, []);
+
+  const handlePress = ()=>{
+    const userIndex = availableMembersIds.indexOf(member)
+    const userLocation = locations[userIndex]
+    const locationData = {
+      latitude: userLocation.location.latitude,
+      longitude: userLocation.location.longitude,
+    }
+    mapRef.current.animateCamera({
+      center: locationData,
+      zoom: 20
+    },{duration: 1000})
+  }
+
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={handlePress}>
       <Image
         style={styles.image}
         source={require("./../../assets/group profile.png")}
@@ -30,7 +45,7 @@ export default function GroupMember({
         {memberData.name ? memberData.name : ""}
       </Text>
       <Text style={styles.onlineText}>Online</Text>
-    </View>
+    </Pressable>
   );
 }
 

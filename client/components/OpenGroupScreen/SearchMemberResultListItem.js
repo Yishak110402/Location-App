@@ -5,7 +5,11 @@ import { GroupContext } from "../../context/groupContext";
 
 export default function SearchMemberResultListItem({ memberId }) {
   const [memberData, setmemberData] = useState({ shortName: "Loading..." });
-  const { fetchUser, availableMembersIds } = useContext(GroupContext);
+  const { fetchUser, availableMembersIds, showMemberOptionsModal, setShowMemberOptionsModal, setClickedMember } = useContext(GroupContext);
+  const handlePress = ()=>{
+    setClickedMember(memberData)
+    setShowMemberOptionsModal(true)
+  }
 
   useEffect(() => {
     const loadUserDetails = async () => {
@@ -20,7 +24,7 @@ export default function SearchMemberResultListItem({ memberId }) {
   }, []);
 
   return (
-    <Pressable style={styles.container}>
+    <Pressable onPress={handlePress} style={styles.container}>
       <Image
         style={styles.image}
         source={require("./../../assets/profile pic.jpg")}

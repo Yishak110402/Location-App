@@ -112,7 +112,6 @@ export default function OpenGroupScreen() {
         { duration: 1500 }
       );
     }
-
     currLocation();
   }, []);
   useEffect(() => {
@@ -185,6 +184,8 @@ export default function OpenGroupScreen() {
                 currGroup={currGroup}
                 availableMembersIds={availableMembersIds}
                 member={item}
+                mapRef={mapRef}
+                locations={groupMembersLocations}
               />
             );
           }}
